@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SolarSun — Proposta Comercial</title>
+  <link rel="icon" href="assets/logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/app.css" />
+</head>
+<body>
+  <header class="toolbar">
+    <div class="brand">
+      <img src="assets/logo.png" alt="SolarSun" />
+      <div>
+        <strong>SOLARSUN</strong>
+        <small>Proposta Comercial</small>
+      </div>
+    </div>
+    <nav class="toolbar-nav">
+      <button type="button" data-view="edit">Dados</button>
+      <button type="button" data-view="preview">Proposta</button>
+      <button type="button" class="primary" id="btnPrint">Impressão da Proposta</button>
+      <button type="button" id="btnReset">Limpar Dados</button>
+    </nav>
+    <div class="toolbar-prices">
+      <span class="toolbar-prices-label">Tabela de Preços</span>
+      <a class="btn" href="assets/Tabela_Precos_4Bi.xlsx" download>Baixar</a>
+      <label class="btn">Importar<input type="file" id="file4bi" accept=".xlsx,.xls,.csv" hidden /></label>
+    </div>
+  </header>
+
+  <div class="app" id="app">
+    <aside class="editor">
+      <nav class="tabs" id="tabs">
+        <button type="button" class="active" data-tab="checklist">Checklist</button>
+        <button type="button" data-tab="proposta">Proposta</button>
+        <button type="button" data-tab="consumo">Consumo</button>
+        <button type="button" data-tab="tarifas">Tarifas</button>
+        <button type="button" data-tab="tabela4bi">Tabela 4Bi</button>
+      </nav>
+
+      <section class="panel active" id="tab-checklist">
+        <h2>Checklist de venda e vistoria</h2>
+        <p class="note">Marque o que já foi conferido antes de emitir a proposta.</p>
+        <h3>Vistoria técnica</h3>
+        <div class="check-list" id="checkItens"></div>
+        <h3>Forma de pagamento</h3>
+        <div class="pay-row">
+          <label><input type="radio" name="pagamento" value="avista" /> À vista</label>
+          <label><input type="radio" name="pagamento" value="financiamento" /> Financiamento</label>
+          <label><input type="radio" name="pagamento" value="outros" /> Outros</label>
+        </div>
+        <h3>Dados da vistoria</h3>
+        <div class="grid-2">
+          <div class="field"><label>Cliente</label><input data-path="checklist.cliente" /></div>
+          <div class="field"><label>Nº do projeto</label><input data-path="checklist.numeroProjeto" /></div>
+          <div class="field span-2"><label>Endereço</label><input data-path="checklist.endereco" /></div>
+          <div class="field"><label>E-mail</label><input type="email" data-path="checklist.email" /></div>
+          <div class="field"><label>Telefone</label><input data-path="checklist.telefone" type="text" maxlength="15" placeholder="(00) 00000-0000" autocomplete="tel" spellcheck="false" /></div>
+          <div class="field"><label>N° UC</label><input data-path="checklist.uc" /></div>
+          <div class="field"><label>Potência disjuntor de entrada</label><input data-path="checklist.disjuntor" /></div>
+          <div class="field"><label>Tipo de telhado</label><input data-path="checklist.tipoTelhado" /></div>
+          <div class="field"><label>Área mínima de telhado (m²)</label><input data-path="checklist.areaTelhado" /></div>
+          <div class="field span-2"><label>Observações</label><textarea data-path="checklist.observacoes"></textarea></div>
+          <div class="field"><label>Responsável pela conferência</label><input data-path="checklist.responsavel" /></div>
+          <div class="field"><label>Data da conferência</label><input type="date" data-path="checklist.dataConferencia" /></div>
+        </div>
+      </section>
+
+      <section class="panel" id="tab-proposta">
+        <h2>Proposta / Orçamento</h2>
+        <h3>Dados da empresa</h3>
+        <p class="note">Aparecem na página de aceite do cliente.</p>
+        <div class="grid-2">
+          <div class="field"><label>CNPJ</label><input data-path="empresa.cnpj" type="text" maxlength="18" placeholder="00.000.000/0000-00" autocomplete="off" spellcheck="false" /></div>
+          <div class="field"><label>Telefone</label><input data-path="empresa.telefone" type="text" maxlength="15" placeholder="(00) 00000-0000" autocomplete="tel" spellcheck="false" /></div>
+          <div class="field span-2"><label>Endereço</label><input data-path="empresa.endereco" placeholder="Rua, número, cidade / UF" /></div>
+        </div>
+        <h3>Identificação</h3>
+        <div class="grid-2">
+          <div class="field"><label>Número da proposta</label><input data-path="proposta.numero" /></div>
+          <div class="field"><label>Data</label><input type="date" data-path="proposta.data" /></div>
+          <div class="field"><label>Validade da proposta</label><input type="date" data-path="proposta.validade" /></div>
+          <div class="field"><label>Cliente</label><input data-path="proposta.cliente" /></div>
+          <div class="field"><label>CPF / CNPJ</label><input data-path="proposta.cpfCnpj" type="text" maxlength="18" placeholder="000.000.000-00" autocomplete="off" spellcheck="false" /></div>
+          <div class="field"><label>Classe</label><input data-path="proposta.classe" /></div>
+          <div class="field"><label>Concessionária</label><input data-path="proposta.concessionaria" /></div>
+          <div class="field"><label>Mês / ano da fatura</label><input data-path="proposta.mesAnoFatura" type="text" maxlength="7" placeholder="10/2026" autocomplete="off" spellcheck="false" /></div>
+          <div class="field"><label>Vencimento da fatura</label><input type="date" data-path="proposta.vencimentoFatura" /></div>
+        </div>
+        <h3>Equipamentos</h3>
+        <div class="grid-2">
+          <div class="field solo"><label>Pot. painel (W)</label><input type="number" data-path="proposta.potPainelW" /></div>
+          <div class="field"><label>Nº de painéis</label><input type="number" data-path="proposta.qtdePaineis" /></div>
+          <div class="field"><label>Tipo / marca do painel</label><input data-path="proposta.tipoPainel" /></div>
+          <div class="field"><label>Nº de inversores</label><input type="number" data-path="proposta.qtdeInversores" /></div>
+          <div class="field"><label>Tipo / potência do inversor</label><input data-path="proposta.tipoInversor" /></div>
+          <div class="field"><label>Nº conj. estrutura</label><input type="number" data-path="proposta.qtdeEstrutura" /></div>
+          <div class="field"><label>Tipo da estrutura</label><input data-path="proposta.tipoEstrutura" /></div>
+        </div>
+        <h3>Valores</h3>
+        <div class="grid-2">
+          <div class="field"><label>Valor do investimento</label><input data-path="proposta.valorInvestimento" inputmode="decimal" placeholder="R$ 0,00" autocomplete="off" /></div>
+          <div class="field">
+            <label>Tipo de Desconto</label>
+            <select data-path="proposta.tipoDesconto">
+              <option value="percentual">em percentual</option>
+              <option value="reais">em reais</option>
+            </select>
+          </div>
+          <div class="field">
+            <label id="lblDesconto">Desconto (%)</label>
+            <input id="inDesconto" data-path="proposta.descontoValor" inputmode="decimal" placeholder="0,0%" autocomplete="off" />
+          </div>
+          <div class="field calc"><label>Valor final</label><input id="outValorFinalCalc" readonly /></div>
+          <div class="field">
+            <label class="with-check"><span>Potência kWp</span><span class="opt"><input type="checkbox" data-path="proposta.potenciaManual" /> manual</span></label>
+            <input type="number" step="0.01" data-path="proposta.potenciaKwp" />
+          </div>
+          <div class="field calc"><label>Potência kWp calculada</label><input id="outPotenciaCalc" readonly /></div>
+          <div class="field">
+            <label class="with-check"><span>Retorno financeiro (meses)</span><span class="opt"><input type="checkbox" data-path="proposta.retornoManual" /> manual</span></label>
+            <input type="number" data-path="proposta.retornoMeses" />
+          </div>
+          <div class="field calc"><label>Retorno estimado</label><input id="outRetornoCalc" readonly /></div>
+        </div>
+        <h3>Financiamento</h3>
+        <div class="grid-2">
+          <div class="field"><label>Taxa do banco (a.m.)</label><input data-path="proposta.taxaBancoPct" inputmode="decimal" placeholder="0,00%" autocomplete="off" /></div>
+          <div class="field"><label>Entrada (%)</label><input data-path="proposta.entradaPercentPct" inputmode="decimal" placeholder="0,0%" autocomplete="off" /></div>
+          <div class="field"><label>Prazos (meses, separados por vírgula)</label><input data-path="proposta.prazosTexto" placeholder="36, 48, 60, 72" /></div>
+          <div class="field"><label>Valor financiado (se vazio, usa o valor final)</label><input data-path="proposta.valorFinanciado" inputmode="decimal" placeholder="R$ 0,00" autocomplete="off" /></div>
+        </div>
+      </section>
+
+      <section class="panel" id="tab-consumo">
+        <h2>Consumo × geração</h2>
+        <p class="note">Consumo mensal por UC e HSP são preenchidos pelo usuário. Geração estimada mensal: (média kWh / média HSP) × HSP do mês.</p>
+        <div class="grid-2">
+          <div class="field">
+            <label class="with-check"><span>Geração média kWh/mês</span><span class="opt"><input type="checkbox" data-path="consumo.geracaoManual" /> manual</span></label>
+            <input type="number" data-path="consumo.geracaoMedia" />
+          </div>
+          <div class="field calc"><label>Geração estimada (kWp × 98)</label><input id="outGeracaoEst" readonly /></div>
+        </div>
+        <div id="ucsEditor"></div>
+        <button type="button" id="btnAddUc">+ Unidade consumidora</button>
+      </section>
+
+      <section class="panel" id="tab-tarifas">
+        <h2>Tarifas e viabilidade</h2>
+        <div class="grid-2">
+          <div class="field"><label>TUSD (R$/kWh)</label><input type="number" step="0.0001" data-path="tarifas.tusd" /></div>
+          <div class="field"><label>TE (R$/kWh)</label><input type="number" step="0.0001" data-path="tarifas.te" /></div>
+          <div class="field"><label>FIO B (R$/kWh)</label><input type="number" step="0.0001" data-path="tarifas.fioB" /></div>
+          <div class="field"><label>Subsídio FIO B</label><input type="number" step="0.0001" data-path="tarifas.subsidio" /></div>
+          <div class="field"><label>COSIP (R$)</label><input type="number" step="0.01" data-path="tarifas.cosip" /></div>
+          <div class="field"><label>PIS</label><input data-path="tarifas.pisPct" inputmode="decimal" placeholder="0,00%" autocomplete="off" /></div>
+          <div class="field"><label>COFINS</label><input data-path="tarifas.cofinsPct" inputmode="decimal" placeholder="0,00%" autocomplete="off" /></div>
+          <div class="field"><label>ICMS</label><input data-path="tarifas.icmsPct" inputmode="decimal" placeholder="0,00%" autocomplete="off" /></div>
+          <div class="field"><label>Padrão de consumo</label>
+            <select data-path="tarifas.padraoConsumo">
+              <option>Uso apenas noturno</option>
+              <option>Uso predominante noturno</option>
+              <option>Uso predominante diurno</option>
+              <option>100% de autoconsumo</option>
+            </select>
+          </div>
+          <div class="field"><label>Taxa anual reajuste concessionária</label><input data-path="tarifas.taxaReajustePct" inputmode="decimal" placeholder="0,00%" autocomplete="off" /></div>
+        </div>
+      </section>
+
+      <section class="panel" id="tab-tabela4bi">
+        <h2>Tabela de preços 4Bi</h2>
+        <p class="note">A tabela começa vazia. Baixe o modelo Excel, preencha e importe. Clique em um kit para copiar potência, painéis e inversor para a proposta.</p>
+        <p class="note" id="status4bi" hidden></p>
+        <div id="tabela4biWrap" class="empty-4bi">Nenhum kit importado.</div>
+      </section>
+
+    </aside>
+
+    <main class="preview" id="preview">
+      <!-- CAPA -->
+      <section class="page cover">
+        <img class="cover-photo" src="assets/hero.jpg" alt="" />
+        <div class="cover-inner">
+          <div class="cover-top">
+            <img class="cover-logo" src="assets/logo.png" alt="Logo SolarSun" />
+            <div class="cover-brand">
+              <div class="name" data-bind="empresa.nome">SolarSun</div>
+              <div class="tag" data-bind="empresa.tagline">energia para gerações</div>
+            </div>
+          </div>
+          <div class="cover-title">
+            <h1>Proposta<br />Comercial</h1>
+            <div class="gold-line" style="width:48px;height:5px;background:var(--gold);border-radius:4px;margin:10px 0 14px"></div>
+            <div class="meta-list">
+              <div class="row"><img src="assets/icon-doc.png" alt="" /><span>Proposta Comercial nº <b id="cNumero">—</b></span></div>
+              <div class="row"><img src="assets/icon-cliente.png" alt="" /><span>Cliente: <b id="cCliente">—</b></span></div>
+              <div class="row"><img src="assets/icon-energia.png" alt="" /><span>Potência: <b id="cPotencia">—</b></span></div>
+              <div class="row"><img src="assets/icon-alvo.png" alt="" /><span>Geração Média: <b id="cGeracao">—</b></span></div>
+              <div class="row"><img src="assets/icon-calendario.png" alt="" /><span>Data: <b id="cData">—</b></span></div>
+              <div class="row"><img src="assets/icon-user-alt.png" alt="" /><span>Validade da proposta: <b id="cValidade">—</b></span></div>
+            </div>
+          </div>
+          <div class="cover-social"><span>f</span><span>ig</span><span>in</span><span>w</span></div>
+          <img class="cover-accent" src="assets/accent-lines.png" alt="" />
+        </div>
+      </section>
+
+      <!-- P2 ANALISE DE INVESTIMENTO (PDF p.2) -->
+      <section class="page inner">
+        <header class="page-head">
+          <div class="brand-block">
+            <img src="assets/logo.png" alt="" />
+            <div>
+              <div class="name" data-bind="empresa.nome">SolarSun</div>
+              <div class="tag" data-bind="empresa.tagline">energia para gerações</div>
+            </div>
+          </div>
+          <div class="head-right">
+            <span>Proposta Comercial nº <b id="h2Numero">—</b></span>
+            <span class="page-badge">PÁG. 2/6</span>
+          </div>
+        </header>
+        <div class="page-body">
+          <div class="title-block">
+            <h2>Análise de Investimento</h2>
+            <div class="gold-line"></div>
+          </div>
+          <p class="muted" style="margin:0 0 4px;font-weight:700;color:#0b1f3a">Histórico de consumo x geração estimada (kWh/mês)</p>
+          <svg class="chart-wide" id="chartConsumo" viewBox="0 0 640 168" preserveAspectRatio="none"></svg>
+          <div class="two" style="font-size:10px;margin:2px 0 8px">
+            <div><span style="display:inline-block;width:10px;height:10px;background:#0b1f3a;margin-right:4px"></span>Consumo do cliente</div>
+            <div><span style="display:inline-block;width:10px;height:10px;background:#f5a623;margin-right:4px"></span>Geração estimada</div>
+          </div>
+          <div class="analysis-top">
+            <div>
+              <div class="bill-pdf">
+                <div class="bh" id="bConcessionaria">Resumo da conta de energia</div>
+                <div class="bb">
+                  <div><div class="k">Vencimento</div><div class="v" id="bVenc">—</div></div>
+                  <div><div class="k">Mês de referência</div><div class="v" id="bRef">—</div></div>
+                  <div><div class="k">Valor total a pagar</div><div class="v" id="bValor">—</div></div>
+                  <div><div class="k">Unidade Consumidora</div><div class="v" id="bUc">—</div></div>
+                  <div><div class="k">Classe</div><div class="v" id="bClasse">—</div></div>
+                  <div><div class="k">Cliente</div><div class="v" id="bClienteLinha">—</div></div>
+                </div>
+              </div>
+              <p class="bill-note">Estimativa de geração com sistema orientado para o norte.</p>
+            </div>
+            <div class="analysis-right">
+              <div class="kpi4">
+                <div class="card"><div class="lbl">Consumo Médio</div><div class="val" id="bCons">—</div></div>
+                <div class="card"><div class="lbl">Geração Média</div><div class="val" id="bGer">—</div></div>
+                <div class="card"><div class="lbl">Economia Mensal</div><div class="val" id="bEco2">—</div><div class="hint">aproximadamente</div></div>
+                <div class="card"><div class="lbl">Retorno Financeiro</div><div class="val" id="fRet">—</div><div class="hint">aproximadamente</div></div>
+              </div>
+              <div class="inv-banner" id="invBanner">
+                <div class="l">Valor do investimento</div>
+                <div class="r">
+                  <div class="inv-from" id="invFrom">De <s id="fDe">—</s></div>
+                  <div class="inv-por" id="invPor">por</div>
+                  <strong id="fPor">—</strong>
+                  <span class="inv-pag" id="fPag">à vista</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <p class="muted" style="margin:8px 0 4px;font-weight:700;color:#0b1f3a">Simulação de financiamento</p>
+          <p class="fine" style="margin:0">(Sujeito à análise de crédito)</p>
+          <table class="fin">
+            <thead>
+              <tr><th>Prazo (meses)</th><th>Entrada</th><th>Valor financiado</th><th>Parcela mensal</th></tr>
+            </thead>
+            <tbody id="finBody"></tbody>
+          </table>
+          <p class="muted" style="margin:10px 0 4px;font-weight:700;color:#0b1f3a;text-align:center">O que está incluso na proposta?</p>
+          <div class="incl4">
+            <div><img src="assets/icon-energia.png" alt="" /><b>Equipamentos Premium</b><span>Módulos fotovoltaicos e inversor de alta performance.</span></div>
+            <div><img src="assets/icon-cliente.png" alt="" /><b>Instalação Profissional</b><span>Equipe especializada e instalação segura e eficiente.</span></div>
+            <div><img src="assets/icon-doc.png" alt="" /><b>Homologação Completa</b><span>Cuidamos de todo o processo junto à concessionária.</span></div>
+            <div><img src="assets/icon-alvo.png" alt="" /><b>Monitoramento Inteligente</b><span>Acompanhe a geração de energia em tempo real pelo app.</span></div>
+          </div>
+        </div>
+        <footer class="page-foot">Garantia de performance e suporte técnico dedicado pós-instalação.</footer>
+      </section>
+
+      <!-- P3 VIABILIDADE -->
+      <section class="page inner">
+        <header class="page-head">
+          <div class="brand-block">
+            <img src="assets/logo.png" alt="" />
+            <div>
+              <div class="name" data-bind="empresa.nome">SolarSun</div>
+              <div class="tag" data-bind="empresa.tagline">energia para gerações</div>
+            </div>
+          </div>
+          <div class="head-right">
+            <span>Proposta Comercial nº <b class="js-num">—</b></span>
+            <span class="page-badge">PÁG. 3/6</span>
+          </div>
+        </header>
+        <div class="page-body">
+          <div class="title-block">
+            <h2>Viabilidade em 30 anos</h2>
+            <p>Estudo financeiro com os dados preenchidos nesta proposta.</p>
+            <div class="gold-line"></div>
+          </div>
+          <div class="kpi-row">
+            <div class="card kpi navy"><div class="lbl">Payback estimado</div><div class="val" id="vPay">—</div></div>
+            <div class="card kpi gold"><div class="lbl">VPL (modelo planilha)</div><div class="val" id="vVpl" style="font-size:16px">—</div></div>
+            <div class="card kpi navy"><div class="lbl">Retorno mensal do projeto</div><div class="val" id="vRet" style="font-size:16px">—</div></div>
+          </div>
+          <h2 class="sec">Saldo de retorno do <span>investimento</span></h2>
+          <svg class="chart-wide" id="chartViab" viewBox="0 0 640 168" preserveAspectRatio="none"></svg>
+          <div class="compare" style="margin-top:10px">
+            <div class="card"><div class="muted">Invest. 30a (7% a.a.)</div><div id="v30" style="font-weight:700">—</div></div>
+            <div class="card"><div class="muted">Retorno poupança 0,51% a.m.</div><div id="vPoup" style="font-weight:700">—</div></div>
+            <div class="card"><div class="muted">Retorno 100% CDI 1,03% a.m.</div><div id="vCdi" style="font-weight:700">—</div></div>
+          </div>
+          <div class="two" style="margin-top:8px">
+            <div class="card"><div class="muted">Taxa anual de reajuste</div><div class="big-num" id="kReaj" style="font-size:22px">—</div></div>
+            <div class="card"><div class="muted">Fatura média atual</div><div class="big-num" id="kFat" style="font-size:22px">—</div></div>
+          </div>
+          <div class="two" style="margin-top:8px">
+            <div class="card"><div class="muted">Árvores equivalentes / mês</div><div class="big-num" id="vArv" style="font-size:22px">—</div></div>
+            <div class="card"><div class="muted">Automóveis fora de circulação / mês</div><div class="big-num" id="vCar" style="font-size:22px">—</div></div>
+          </div>
+        </div>
+        <footer class="page-foot">Garantia de performance e suporte técnico dedicado pós-instalação.</footer>
+      </section>
+
+      <!-- P4 EQUIPAMENTOS -->
+      <section class="page inner">
+        <header class="page-head">
+          <div class="brand-block">
+            <img src="assets/logo.png" alt="" />
+            <div>
+              <div class="name" data-bind="empresa.nome">SolarSun</div>
+              <div class="tag" data-bind="empresa.tagline">energia para gerações</div>
+            </div>
+          </div>
+          <div class="head-right">
+            <span>Proposta Comercial nº <b class="js-num">—</b></span>
+            <span class="page-badge">PÁG. 4/6</span>
+          </div>
+        </header>
+        <div class="page-body">
+          <div class="title-block">
+            <h2>Equipamentos do Sistema</h2>
+            <p>Solução recomendada para máxima performance e segurança.</p>
+            <div class="gold-line"></div>
+          </div>
+          <article class="equip-card">
+            <img class="photo" src="assets/eq-modulo.png" alt="Módulo fotovoltaico" />
+            <div>
+              <h3>Módulo Fotovoltaico Premium</h3>
+              <div class="spec" id="specModulo">Conforme dimensionamento da proposta</div>
+              <ul>
+                <li>Alta eficiência e maior geração de energia.</li>
+                <li>Excelente durabilidade e confiabilidade.</li>
+                <li>Resistência a condições climáticas adversas.</li>
+                <li>Performance consistente por mais de 25 anos.</li>
+              </ul>
+            </div>
+          </article>
+          <article class="equip-card">
+            <img class="photo" src="assets/eq-inversor.png" alt="Inversor" />
+            <div>
+              <h3>Inversor de Alta Performance</h3>
+              <div class="spec" id="specInversor">Conforme dimensionamento da proposta</div>
+              <ul>
+                <li>Conversão eficiente para máxima geração.</li>
+                <li>Monitoramento inteligente em tempo real.</li>
+                <li>Proteções elétricas integradas e certificadas.</li>
+                <li>Operação confiável e silenciosa.</li>
+              </ul>
+            </div>
+          </article>
+          <article class="equip-card">
+            <img class="photo" src="assets/eq-estrutura.jpg" alt="Estrutura de fixação" />
+            <div>
+              <h3>Estrutura de Fixação Reforçada</h3>
+              <div class="spec" id="specEstrutura">Conforme vistoria e tipo de telhado</div>
+              <ul>
+                <li>Fixação segura e estável para o sistema.</li>
+                <li>Alta resistência mecânica e anticorrosiva.</li>
+                <li>Adaptação perfeita ao tipo de telhado.</li>
+                <li>Longa vida útil e baixa necessidade de manutenção.</li>
+              </ul>
+            </div>
+          </article>
+          <p style="text-align:center;font-weight:800;color:#0b1f3a;margin:10px 0 6px">O que está incluso?</p>
+          <div class="incl5">
+            <div class="box"><img src="assets/icon-energia.png" alt="" /><b>Projeto Executivo</b><span>Dimensionamento personalizado para máximo desempenho.</span></div>
+            <div class="box"><img src="assets/icon-cliente.png" alt="" /><b>Instalação Profissional</b><span>Equipe especializada e instalação segura e eficiente.</span></div>
+            <div class="box"><img src="assets/icon-doc.png" alt="" /><b>Homologação</b><span>Cuidamos de todo o processo junto à concessionária.</span></div>
+            <div class="box"><img src="assets/icon-alvo.png" alt="" /><b>Monitoramento</b><span>Acompanhe a geração de energia em tempo real pelo app.</span></div>
+            <div class="box"><img src="assets/icon-phone.png" alt="" /><b>Suporte Técnico</b><span>Atendimento dedicado antes, durante e após a instalação.</span></div>
+          </div>
+        </div>
+        <footer class="page-foot">Garantia de performance e suporte técnico dedicado pós-instalação.</footer>
+      </section>
+
+      <!-- P5 INSTALACOES -->
+      <section class="page inner">
+        <header class="page-head">
+          <div class="brand-block">
+            <img src="assets/logo.png" alt="" />
+            <div>
+              <div class="name" data-bind="empresa.nome">SolarSun</div>
+              <div class="tag" data-bind="empresa.tagline">energia para gerações</div>
+            </div>
+          </div>
+          <div class="head-right">
+            <span>Proposta Comercial nº <b class="js-num">—</b></span>
+            <span class="page-badge">PÁG. 5/6</span>
+          </div>
+        </header>
+        <div class="page-body">
+          <div class="title-block">
+            <h2>Instalações Realizadas</h2>
+            <p>Projetos executados com qualidade, segurança e excelente performance.</p>
+          </div>
+          <div class="why-row">
+            <div class="why-ask"><span class="q">?</span>Por que isso importa?</div>
+            <div class="why-item"><b>Experiência comprovada</b><span>Centenas de projetos entregues com excelência em todo o Brasil.</span></div>
+            <div class="why-item"><b>Instalação segura</b><span>Padrões técnicos rigorosos e equipamentos de alta qualidade.</span></div>
+            <div class="why-item"><b>Resultados reais</b><span>Economia garantida e performance que gera confiança.</span></div>
+          </div>
+          <div class="inst-grid">
+            <article class="inst-card">
+              <div class="photo"><img src="assets/inst-florianopolis.jpg" alt="Florianópolis" /><span class="pin">Florianópolis/SC</span></div>
+              <div class="inst-metrics">
+                <div>Potência do sistema<b>6,60 kWp</b></div>
+                <div>Módulos instalados<b>15 módulos</b></div>
+                <div class="eco">Economia mensal<b>R$ 480,00</b></div>
+                <div>Redução de CO₂<b>520 kg/mês</b></div>
+              </div>
+            </article>
+            <article class="inst-card">
+              <div class="photo"><img src="assets/inst-campinas.jpg" alt="Campinas" /><span class="pin">Campinas/SP</span></div>
+              <div class="inst-metrics">
+                <div>Potência do sistema<b>29,70 kWp</b></div>
+                <div>Módulos instalados<b>66 módulos</b></div>
+                <div class="eco">Economia mensal<b>R$ 2.180,00</b></div>
+                <div>Redução de CO₂<b>2.350 kg/mês</b></div>
+              </div>
+            </article>
+            <article class="inst-card">
+              <div class="photo"><img src="assets/inst-petropolis.jpg" alt="Petrópolis" /><span class="pin">Petrópolis/RJ</span></div>
+              <div class="inst-metrics">
+                <div>Potência do sistema<b>4,20 kWp</b></div>
+                <div>Módulos instalados<b>10 módulos</b></div>
+                <div class="eco">Economia mensal<b>R$ 310,00</b></div>
+                <div>Redução de CO₂<b>320 kg/mês</b></div>
+              </div>
+            </article>
+            <article class="inst-card">
+              <div class="photo"><img src="assets/inst-uberlandia.jpg" alt="Uberlândia" /><span class="pin">Uberlândia/MG</span></div>
+              <div class="inst-metrics">
+                <div>Potência do sistema<b>75,90 kWp</b></div>
+                <div>Módulos instalados<b>168 módulos</b></div>
+                <div class="eco">Economia mensal<b>R$ 480,00</b></div>
+                <div>Redução de CO₂<b>520 kg/mês</b></div>
+              </div>
+            </article>
+          </div>
+          <p style="text-align:center;font-weight:800;color:#0b1f3a;margin:12px 0 8px">Diferenciais SolarSun</p>
+          <div class="diff-row">
+            <div><div class="ico">👥</div><b>Equipe Especializada</b><span>Profissionais certificados e treinamento contínuo em novas tecnologias.</span></div>
+            <div><div class="ico">⚙</div><b>Projetos Personalizados</b><span>Soluções sob medida para cada perfil de consumo e necessidade.</span></div>
+            <div><div class="ico">✓</div><b>Acabamento Profissional</b><span>Instalações organizadas, detalhadas e com alto padrão de qualidade.</span></div>
+            <div><div class="ico">☎</div><b>Suporte Pós-venda</b><span>Acompanhamento contínuo e atendimento sempre que precisar.</span></div>
+          </div>
+        </div>
+        <footer class="page-foot">Confiança construída em cada projeto. Performance que gera economia todos os dias.</footer>
+      </section>
+
+      <!-- P6 ACEITE -->
+      <section class="page inner">
+        <header class="page-head">
+          <div class="brand-block">
+            <img src="assets/logo.png" alt="" />
+            <div>
+              <div class="name" data-bind="empresa.nome">SolarSun</div>
+              <div class="tag" data-bind="empresa.tagline">energia para gerações</div>
+            </div>
+          </div>
+          <div class="head-right">
+            <span>Proposta Comercial nº <b class="js-num">—</b></span>
+            <span class="page-badge">PÁG. 6/6</span>
+          </div>
+        </header>
+        <div class="page-body">
+          <div class="title-block">
+            <h2>Aceite do cliente</h2>
+            <p>Checklist de vistoria, observações e conferência da proposta.</p>
+            <div class="gold-line"></div>
+          </div>
+          <div id="checkResumo" class="two"></div>
+          <h2 class="sec" style="margin-top:12px">Anotações e observações</h2>
+          <div class="obs-box" id="obsBox">—</div>
+          <div class="accept">
+            <h3>ACEITE DO CLIENTE</h3>
+            <div class="sign-grid">
+              <div>
+                <div>Nome / Razão social</div>
+                <div class="sign-line" id="aNome"></div>
+                <div>CPF / CNPJ</div>
+                <div class="sign-line" id="aDoc"></div>
+                <div>Assinatura do cliente</div>
+                <div class="sign-line"></div>
+              </div>
+              <div>
+                <div id="aEmp" style="font-weight:800"></div>
+                <div>CNPJ: <span id="aCnpj">—</span></div>
+                <div>Telefone: <span id="aTel">—</span></div>
+                <div>Endereço: <span id="aEnd">—</span></div>
+                <div style="margin-top:18px">Responsável pela conferência</div>
+                <div class="sign-line" id="aResp"></div>
+                <div>Data: <span id="aData">—</span> · Projeto: <span id="aProj">—</span></div>
+              </div>
+            </div>
+          </div>
+          <p class="fine" style="margin-top:10px">25 anos de garantia de geração de energia e vida útil de 35 anos nos módulos · 10 a 15 anos de garantia no inversor, conforme fabricante informado na proposta.</p>
+        </div>
+        <footer class="page-foot">Garantia de performance e suporte técnico dedicado pós-instalação.</footer>
+      </section>
+    </main>
+  </div>
+
+  <script src="js/xlsx.full.min.js"></script>
+  <script src="js/calc.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

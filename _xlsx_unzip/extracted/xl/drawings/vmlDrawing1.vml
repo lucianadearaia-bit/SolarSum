@@ -1,0 +1,254 @@
+<xml xmlns:v="urn:schemas-microsoft-com:vml"
+ xmlns:o="urn:schemas-microsoft-com:office:office"
+ xmlns:x="urn:schemas-microsoft-com:office:excel">
+ <o:shapelayout v:ext="edit">
+  <o:idmap v:ext="edit" data="1"/>
+ </o:shapelayout><v:shapetype id="_x0000_t201" coordsize="21600,21600" o:spt="201"
+  path="m,l,21600r21600,l21600,xe">
+  <v:stroke joinstyle="miter"/>
+  <v:path shadowok="f" o:extrusionok="f" strokeok="f" fillok="f" o:connecttype="rect"/>
+  <o:lock v:ext="edit" shapetype="t"/>
+ </v:shapetype><v:shape id="_x0000_s1025" type="#_x0000_t201" style='position:absolute;
+  margin-left:14.4pt;margin-top:85.8pt;width:157.8pt;height:18pt;z-index:1;
+  mso-wrap-style:tight' filled="f" fillcolor="window [65]" stroked="f"
+  strokecolor="windowText [64]" o:insetmode="auto">
+  <v:fill color2="window [65]"/>
+  <v:path shadowok="t" strokeok="t" fillok="t"/>
+  <o:lock v:ext="edit" rotation="t"/>
+  <v:textbox style='mso-direction-alt:auto' o:singleclick="f">
+   <div style='text-align:left'><font face="Segoe UI" size="160" color="#000000"><span
+   style='mso-spacerun:yes'> </span>Área do telhado mínima necessária<span
+   style='mso-spacerun:yes'>  </span></font></div>
+  </v:textbox>
+  <x:ClientData ObjectType="Checkbox">
+   <x:SizeWithCells/>
+   <x:Anchor>
+    1, 11, 6, 5, 4, 28, 7, 10</x:Anchor>
+   <x:AutoFill>False</x:AutoFill>
+   <x:AutoLine>False</x:AutoLine>
+   <x:TextVAlign>Center</x:TextVAlign>
+   <x:NoThreeD/>
+  </x:ClientData>
+ </v:shape><v:shape id="_x0000_s1026" type="#_x0000_t201" style='position:absolute;
+  margin-left:14.4pt;margin-top:106.8pt;width:153pt;height:14.4pt;z-index:2;
+  mso-wrap-style:tight' filled="f" fillcolor="window [65]" stroked="f"
+  strokecolor="windowText [64]" o:insetmode="auto">
+  <v:fill color2="window [65]"/>
+  <v:path shadowok="t" strokeok="t" fillok="t"/>
+  <o:lock v:ext="edit" rotation="t"/>
+  <v:textbox style='mso-direction-alt:auto' o:singleclick="f">
+   <div style='text-align:left'><font face="Segoe UI" size="160" color="#000000"><span
+   style='mso-spacerun:yes'> </span>Foto do padrão de entrada</font></div>
+  </v:textbox>
+  <x:ClientData ObjectType="Checkbox">
+   <x:SizeWithCells/>
+   <x:Anchor>
+    1, 11, 7, 15, 4, 20, 8, 14</x:Anchor>
+   <x:AutoFill>False</x:AutoFill>
+   <x:AutoLine>False</x:AutoLine>
+   <x:TextVAlign>Center</x:TextVAlign>
+   <x:NoThreeD/>
+  </x:ClientData>
+ </v:shape><v:shape id="_x0000_s1027" type="#_x0000_t201" style='position:absolute;
+  margin-left:14.4pt;margin-top:124.8pt;width:186pt;height:18pt;z-index:3;
+  mso-wrap-style:tight' filled="f" fillcolor="window [65]" stroked="f"
+  strokecolor="windowText [64]" o:insetmode="auto">
+  <v:fill color2="window [65]"/>
+  <v:path shadowok="t" strokeok="t" fillok="t"/>
+  <o:lock v:ext="edit" rotation="t"/>
+  <v:textbox style='mso-direction-alt:auto' o:singleclick="f">
+   <div style='text-align:left'><font face="Segoe UI" size="160" color="#000000"><span
+   style='mso-spacerun:yes'> </span>Foto legível da conta de energia do cliente</font></div>
+  </v:textbox>
+  <x:ClientData ObjectType="Checkbox">
+   <x:SizeWithCells/>
+   <x:Anchor>
+    1, 11, 8, 20, 4, 75, 10, 0</x:Anchor>
+   <x:AutoFill>False</x:AutoFill>
+   <x:AutoLine>False</x:AutoLine>
+   <x:TextVAlign>Center</x:TextVAlign>
+   <x:NoThreeD/>
+  </x:ClientData>
+ </v:shape><v:shape id="_x0000_s1028" type="#_x0000_t201" style='position:absolute;
+  margin-left:14.4pt;margin-top:145.8pt;width:265.8pt;height:13.8pt;z-index:4;
+  mso-wrap-style:tight' filled="f" fillcolor="window [65]" stroked="f"
+  strokecolor="windowText [64]" o:insetmode="auto">
+  <v:fill color2="window [65]"/>
+  <v:path shadowok="t" strokeok="t" fillok="t"/>
+  <o:lock v:ext="edit" rotation="t"/>
+  <v:textbox style='mso-direction-alt:auto' o:singleclick="f">
+   <div style='text-align:left'><font face="Segoe UI" size="160" color="#000000"><span
+   style='mso-spacerun:yes'> </span>Foto do documento de identificação do
+   titular da unidade consumidora</font></div>
+  </v:textbox>
+  <x:ClientData ObjectType="Checkbox">
+   <x:SizeWithCells/>
+   <x:Anchor>
+    1, 11, 10, 5, 6, 58, 11, 3</x:Anchor>
+   <x:AutoFill>False</x:AutoFill>
+   <x:AutoLine>False</x:AutoLine>
+   <x:TextVAlign>Center</x:TextVAlign>
+   <x:NoThreeD/>
+  </x:ClientData>
+ </v:shape><v:shape id="_x0000_s1029" type="#_x0000_t201" style='position:absolute;
+  margin-left:14.4pt;margin-top:163.2pt;width:88.2pt;height:16.2pt;z-index:5;
+  mso-wrap-style:tight' filled="f" fillcolor="window [65]" stroked="f"
+  strokecolor="windowText [64]" o:insetmode="auto">
+  <v:fill color2="window [65]"/>
+  <v:path shadowok="t" strokeok="t" fillok="t"/>
+  <o:lock v:ext="edit" rotation="t"/>
+  <v:textbox style='mso-direction-alt:auto' o:singleclick="f">
+   <div style='text-align:left'><font face="Segoe UI" size="160" color="#000000"><span
+   style='mso-spacerun:yes'> </span>Croqui </font></div>
+  </v:textbox>
+  <x:ClientData ObjectType="Checkbox">
+   <x:SizeWithCells/>
+   <x:Anchor>
+    1, 11, 11, 9, 2, 76, 12, 11</x:Anchor>
+   <x:AutoFill>False</x:AutoFill>
+   <x:AutoLine>False</x:AutoLine>
+   <x:TextVAlign>Center</x:TextVAlign>
+   <x:NoThreeD/>
+  </x:ClientData>
+ </v:shape><v:shape id="_x0000_s1030" type="#_x0000_t201" style='position:absolute;
+  margin-left:14.4pt;margin-top:182.4pt;width:232.8pt;height:16.2pt;z-index:6;
+  mso-wrap-style:tight' filled="f" fillcolor="window [65]" stroked="f"
+  strokecolor="windowText [64]" o:insetmode="auto">
+  <v:fill color2="window [65]"/>
+  <v:path shadowok="t" strokeok="t" fillok="t"/>
+  <o:lock v:ext="edit" rotation="t"/>
+  <v:textbox style='mso-direction-alt:auto' o:singleclick="f">
+   <div style='text-align:left'><font face="Segoe UI" size="160" color="#000000"><span
+   style='mso-spacerun:yes'> </span>Foto do medidor e número da Unidade
+   Consumidora</font></div>
+  </v:textbox>
+  <x:ClientData ObjectType="Checkbox">
+   <x:SizeWithCells/>
+   <x:Anchor>
+    1, 11, 12, 16, 6, 3, 13, 18</x:Anchor>
+   <x:AutoFill>False</x:AutoFill>
+   <x:AutoLine>False</x:AutoLine>
+   <x:TextVAlign>Center</x:TextVAlign>
+   <x:NoThreeD/>
+  </x:ClientData>
+ </v:shape><v:shape id="_x0000_s1031" type="#_x0000_t201" style='position:absolute;
+  margin-left:14.4pt;margin-top:201.6pt;width:231pt;height:19.2pt;z-index:7;
+  mso-wrap-style:tight' filled="f" fillcolor="window [65]" stroked="f"
+  strokecolor="windowText [64]" o:insetmode="auto">
+  <v:fill color2="window [65]"/>
+  <v:path shadowok="t" strokeok="t" fillok="t"/>
+  <o:lock v:ext="edit" rotation="t"/>
+  <v:textbox style='mso-direction-alt:auto' o:singleclick="f">
+   <div style='text-align:left'><font face="Segoe UI" size="160" color="#000000"><span
+   style='mso-spacerun:yes'> </span>Verificação de ponto de conexão com a
+   fase/rede do cliente</font></div>
+  </v:textbox>
+  <x:ClientData ObjectType="Checkbox">
+   <x:SizeWithCells/>
+   <x:Anchor>
+    1, 11, 13, 23, 6, 0, 15, 5</x:Anchor>
+   <x:AutoFill>False</x:AutoFill>
+   <x:AutoLine>False</x:AutoLine>
+   <x:TextVAlign>Center</x:TextVAlign>
+   <x:NoThreeD/>
+  </x:ClientData>
+ </v:shape><v:shape id="_x0000_s1032" type="#_x0000_t201" style='position:absolute;
+  margin-left:14.4pt;margin-top:224.4pt;width:205.8pt;height:19.2pt;z-index:8;
+  mso-wrap-style:tight' filled="f" fillcolor="window [65]" stroked="f"
+  strokecolor="windowText [64]" o:insetmode="auto">
+  <v:fill color2="window [65]"/>
+  <v:path shadowok="t" strokeok="t" fillok="t"/>
+  <o:lock v:ext="edit" rotation="t"/>
+  <v:textbox style='mso-direction-alt:auto' o:singleclick="f">
+   <div style='text-align:left'><font face="Segoe UI" size="160" color="#000000"><span
+   style='mso-spacerun:yes'> </span>Foto ou local de fixação do(s) inversor(es)
+   </font></div>
+  </v:textbox>
+  <x:ClientData ObjectType="Checkbox">
+   <x:SizeWithCells/>
+   <x:Anchor>
+    1, 11, 15, 11, 5, 26, 16, 18</x:Anchor>
+   <x:AutoFill>False</x:AutoFill>
+   <x:AutoLine>False</x:AutoLine>
+   <x:TextVAlign>Center</x:TextVAlign>
+   <x:NoThreeD/>
+  </x:ClientData>
+ </v:shape><v:shape id="_x0000_s1033" type="#_x0000_t201" style='position:absolute;
+  margin-left:14.4pt;margin-top:246.6pt;width:168pt;height:16.8pt;z-index:9;
+  mso-wrap-style:tight' filled="f" fillcolor="window [65]" stroked="f"
+  strokecolor="windowText [64]" o:insetmode="auto">
+  <v:fill color2="window [65]"/>
+  <v:path shadowok="t" strokeok="t" fillok="t"/>
+  <o:lock v:ext="edit" rotation="t"/>
+  <v:textbox style='mso-direction-alt:auto' o:singleclick="f">
+   <div style='text-align:left'><font face="Segoe UI" size="160" color="#000000"><span
+   style='mso-spacerun:yes'> </span>Foto da fachada do imóvel/local</font></div>
+  </v:textbox>
+  <x:ClientData ObjectType="Checkbox">
+   <x:SizeWithCells/>
+   <x:Anchor>
+    1, 11, 16, 23, 4, 45, 18, 1</x:Anchor>
+   <x:AutoFill>False</x:AutoFill>
+   <x:AutoLine>False</x:AutoLine>
+   <x:TextVAlign>Center</x:TextVAlign>
+   <x:NoThreeD/>
+  </x:ClientData>
+ </v:shape><v:shape id="_x0000_s1034" type="#_x0000_t201" style='position:absolute;
+  margin-left:14.4pt;margin-top:295.8pt;width:94.2pt;height:16.8pt;z-index:10;
+  mso-wrap-style:tight' filled="f" fillcolor="window [65]" stroked="f"
+  strokecolor="windowText [64]" o:insetmode="auto">
+  <v:fill color2="window [65]"/>
+  <v:path shadowok="t" strokeok="t" fillok="t"/>
+  <o:lock v:ext="edit" rotation="t"/>
+  <v:textbox style='mso-direction-alt:auto' o:singleclick="f">
+   <div style='text-align:left'><font face="Segoe UI" size="160" color="#000000">À
+   vista </font></div>
+  </v:textbox>
+  <x:ClientData ObjectType="Checkbox">
+   <x:SizeWithCells/>
+   <x:Anchor>
+    1, 11, 20, 5, 3, 4, 21, 8</x:Anchor>
+   <x:AutoFill>False</x:AutoFill>
+   <x:AutoLine>False</x:AutoLine>
+   <x:TextVAlign>Center</x:TextVAlign>
+   <x:NoThreeD/>
+  </x:ClientData>
+ </v:shape><v:shape id="_x0000_s1035" type="#_x0000_t201" style='position:absolute;
+  margin-left:98.4pt;margin-top:295.8pt;width:93.6pt;height:16.8pt;z-index:11;
+  mso-wrap-style:tight' filled="f" fillcolor="window [65]" stroked="f"
+  strokecolor="windowText [64]" o:insetmode="auto">
+  <v:fill color2="window [65]"/>
+  <v:path shadowok="t" strokeok="t" fillok="t"/>
+  <o:lock v:ext="edit" rotation="t"/>
+  <v:textbox style='mso-direction-alt:auto' o:singleclick="f">
+   <div style='text-align:left'><font face="Segoe UI" size="160" color="#000000">Financiamento</font></div>
+  </v:textbox>
+  <x:ClientData ObjectType="Checkbox">
+   <x:SizeWithCells/>
+   <x:Anchor>
+    2, 69, 20, 5, 4, 61, 21, 8</x:Anchor>
+   <x:AutoFill>False</x:AutoFill>
+   <x:AutoLine>False</x:AutoLine>
+   <x:TextVAlign>Center</x:TextVAlign>
+   <x:NoThreeD/>
+  </x:ClientData>
+ </v:shape><v:shape id="_x0000_s1036" type="#_x0000_t201" style='position:absolute;
+  margin-left:182.4pt;margin-top:295.8pt;width:93.6pt;height:16.8pt;z-index:12;
+  mso-wrap-style:tight' filled="f" fillcolor="window [65]" stroked="f"
+  strokecolor="windowText [64]" o:insetmode="auto">
+  <v:fill color2="window [65]"/>
+  <v:path shadowok="t" strokeok="t" fillok="t"/>
+  <o:lock v:ext="edit" rotation="t"/>
+  <v:textbox style='mso-direction-alt:auto' o:singleclick="f">
+   <div style='text-align:left'><font face="Segoe UI" size="160" color="#000000">Outros</font></div>
+  </v:textbox>
+  <x:ClientData ObjectType="Checkbox">
+   <x:SizeWithCells/>
+   <x:Anchor>
+    4, 45, 20, 5, 6, 51, 21, 8</x:Anchor>
+   <x:AutoFill>False</x:AutoFill>
+   <x:AutoLine>False</x:AutoLine>
+   <x:TextVAlign>Center</x:TextVAlign>
+   <x:NoThreeD/>
+  </x:ClientData>
+ </v:shape></xml>
