@@ -892,20 +892,39 @@ table.fin tr.is-median td {
 }
 
 @media screen and (max-width: 1100px) {
-  html, body { overflow-x: hidden; }
-  .app { grid-template-columns: 1fr; }
+  html, body {
+    height: 100%;
+    overflow: hidden;
+  }
+  body {
+    display: flex;
+    flex-direction: column;
+  }
+  .toolbar {
+    position: relative;
+    flex-shrink: 0;
+  }
+  .app {
+    grid-template-columns: 1fr;
+    flex: 1 1 auto;
+    min-height: 0;
+    height: auto;
+  }
   .app:not(.preview-only) .preview { display: none; }
   .editor, .preview {
+    height: 100%;
     max-height: none;
-    overflow: visible;
-  }
-  .editor {
-    border-right: 0;
     overflow-x: hidden;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
   }
-  .tabs { top: var(--toolbar-h); }
+  .editor { border-right: 0; }
+  .tabs {
+    top: 0;
+    z-index: 6;
+  }
   .editor .panel {
-    scroll-margin-top: calc(var(--toolbar-h) + 64px);
+    scroll-margin-top: 56px;
   }
   .preview { padding: 16px 10px 32px; }
   .page, .sheet {
@@ -1062,8 +1081,13 @@ table.fin tr.is-median td {
 
 @media print {
   .toolbar, .editor { display: none !important; }
+  html, body {
+    height: auto;
+    overflow: visible;
+    display: block;
+  }
   body { background: #fff; }
-  .app { display: block; }
+  .app { display: block; height: auto; min-height: 0; }
   .preview { padding: 0; overflow: visible; max-height: none; background: #fff; }
   .page, .cover, .cover-photo {
     -webkit-print-color-adjust: exact;
