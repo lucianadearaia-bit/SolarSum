@@ -15,6 +15,7 @@
   --shadow: 0 10px 30px rgba(11, 31, 58, 0.12);
   --page-w: 210mm;
   --page-h: 297mm;
+  --toolbar-h: 58px;
   --font: Inter, "Segoe UI", system-ui, sans-serif;
   --display: Montserrat, Inter, "Segoe UI", sans-serif;
 }
@@ -188,6 +189,7 @@ body {
 .field > label {
   min-height: 32px;
   display: flex;
+  flex-wrap: wrap;
   align-items: flex-end;
   justify-content: space-between;
   gap: 8px;
@@ -850,9 +852,13 @@ table.fin tr:nth-child(even) td { background: #f5f8fc; }
   margin-bottom: 0;
 }
 
-.chart { width: 100%; height: 118px; }
-.chart-wide { width: 100%; height: 168px; }
-.chart-fio { width: 100%; height: 100px; }
+.chart { width: 100%; height: auto; aspect-ratio: 640 / 118; display: block; }
+.chart-wide { width: 100%; height: auto; aspect-ratio: 640 / 168; display: block; }
+.chart-fio { width: 100%; height: auto; aspect-ratio: 640 / 120; display: block; }
+.kpi4 .val, .kpi .val, .bill-pdf .v, .big-num, .meta-list .row span {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
 
 .fio-side {
   display: flex;
@@ -886,9 +892,9 @@ table.fin tr.is-median td {
 }
 
 @media screen and (max-width: 1100px) {
+  html, body { overflow-x: hidden; }
   .app { grid-template-columns: 1fr; }
   .app:not(.preview-only) .preview { display: none; }
-  .fio-kpi { grid-template-columns: 1fr 1fr; }
   .editor, .preview {
     max-height: none;
     overflow: visible;
@@ -897,30 +903,96 @@ table.fin tr.is-median td {
     border-right: 0;
     overflow-x: hidden;
   }
-  .tabs { top: var(--toolbar-h, 58px); }
+  .tabs { top: var(--toolbar-h); }
   .editor .panel {
-    scroll-margin-top: calc(var(--toolbar-h, 58px) + 64px);
+    scroll-margin-top: calc(var(--toolbar-h) + 64px);
   }
   .preview { padding: 16px 10px 32px; }
   .page, .sheet {
     width: min(210mm, 100%);
     height: auto;
     min-height: 0;
+    overflow: visible;
   }
-  .page.inner { overflow: visible; }
   .page.cover {
-    min-height: min(640px, 100dvh);
+    min-height: 0;
     display: flex;
     flex-direction: column;
+    overflow: hidden;
   }
-  .cover-inner { min-height: min(640px, 100dvh); }
-  .page-foot { position: relative; height: auto; padding: 8px 12px; }
+  .cover-inner {
+    height: auto;
+    min-height: 0;
+    flex: 1 0 auto;
+    padding: 16px 16px 20px;
+  }
+  .cover-top, .cover-title, .cover-social { flex-shrink: 0; }
+  .cover-title { margin-top: 28px; }
+  .cover-logo { width: 56px; height: 56px; }
+  .cover-brand .name { font-size: 22px; }
+  .cover-title h1 { font-size: 34px; }
+  .meta-list {
+    max-width: none;
+    gap: 10px;
+  }
+  .meta-list .row {
+    align-items: flex-start;
+    font-size: 13px;
+  }
+  .page-head {
+    height: auto;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 10px 12px;
+  }
+  .page-head .head-right {
+    flex-wrap: wrap;
+    max-width: 100%;
+  }
+  .page-body { padding: 12px 12px 16px; overflow-x: auto; }
+  .page-foot {
+    position: relative;
+    height: auto;
+    padding: 8px 12px;
+    text-align: center;
+  }
   .pay-row { grid-template-columns: 1fr; }
+  .equip-card {
+    grid-template-columns: 1fr;
+    min-height: 0;
+  }
+  .equip-card img.photo {
+    width: 100%;
+    height: 140px;
+  }
+  .incl5, .incl4, .icon-row, .steps, .diff-row { grid-template-columns: 1fr 1fr; }
+  .incl5 .box:last-child { grid-column: 1 / -1; }
+  .why-row { grid-template-columns: 1fr; }
+  .inst-grid { grid-template-columns: 1fr; }
+  .inst-card .photo { height: 160px; }
+  .inst-metrics { grid-template-columns: 1fr 1fr; font-size: 10px; }
+  .inst-metrics b { font-size: 12px; }
+  .analysis-top, .two, .bill, .incl-grid, .accept-duo { grid-template-columns: 1fr; }
+  .inv-banner { grid-template-columns: 1fr; min-height: 0; }
+  .inv-banner .l, .inv-banner .r { padding: 10px 12px; }
+  .kpi-row, .benefits, .compare, .fio-kpi { grid-template-columns: 1fr 1fr; }
+  .bill-pdf .bb { grid-template-columns: 1fr; }
+  table.fin { font-size: 11px; }
+  table.fin th, table.fin td {
+    padding: 6px;
+    white-space: normal;
+    word-break: break-word;
+  }
+  .accept-table th { width: auto; }
+  .kpi4 .val, .kpi .val { font-size: 15px; }
+  .big-num { font-size: 22px; }
+  .table-wrap { max-height: min(60vh, 420px); }
 }
 
 @media screen and (max-width: 720px) {
-  body { overflow-x: hidden; }
+  :root { --toolbar-h: 160px; }
   .toolbar {
+    align-items: flex-start;
     gap: 8px;
     padding: max(8px, env(safe-area-inset-top)) max(10px, env(safe-area-inset-right)) 8px max(10px, env(safe-area-inset-left));
   }
@@ -940,6 +1012,7 @@ table.fin tr.is-median td {
   }
   .toolbar-prices {
     flex: 1 1 100%;
+    flex-wrap: wrap;
     margin-left: 0;
     padding: 8px 0 0;
     border-left: 0;
@@ -966,52 +1039,25 @@ table.fin tr.is-median td {
   .field textarea { min-height: 88px; height: auto; }
   #btnAddUc { min-height: 44px; width: 100%; }
   .preview { padding: 10px 8px 28px; }
-  .page-head {
-    height: auto;
-    flex-wrap: wrap;
-    gap: 8px;
-    padding: 10px 12px;
+  .cover-title { margin-top: 20px; }
+  .kpi-row, .benefits, .compare, .fio-kpi, .kpi4 { grid-template-columns: 1fr; }
+  .accept-table,
+  .accept-table tbody,
+  .accept-table tr,
+  .accept-table th,
+  .accept-table td { display: block; width: 100%; }
+  .accept-table tr { margin-bottom: 8px; }
+  .accept-table th {
+    border-bottom: 0;
+    padding-bottom: 2px;
   }
-  .page-head .head-right { flex-wrap: wrap; }
-  .page-body { padding: 12px 12px 16px; }
-  .cover-inner { padding: 16px 16px 20px; }
-  .cover-title h1 { font-size: 34px; }
-  .meta-list { max-width: none; }
-  .cover-accent { width: 70%; opacity: 0.3; }
-  .equip-card {
-    grid-template-columns: 1fr;
-    min-height: 0;
-  }
-  .equip-card img.photo {
-    width: 100%;
-    height: 140px;
-  }
-  .incl5 { grid-template-columns: 1fr 1fr; }
-  .incl5 .box:last-child { grid-column: 1 / -1; }
-  .why-row { grid-template-columns: 1fr; }
-  .inst-grid { grid-template-columns: 1fr; }
-  .inst-card .photo { height: 160px; }
-  .inst-metrics { grid-template-columns: 1fr 1fr; font-size: 10px; }
-  .inst-metrics b { font-size: 12px; }
-  .diff-row { grid-template-columns: 1fr 1fr; }
-  .analysis-top, .two, .bill, .incl-grid, .accept-duo { grid-template-columns: 1fr; }
-  .inv-banner { grid-template-columns: 1fr; }
-  .incl4, .icon-row, .steps { grid-template-columns: 1fr 1fr; }
-  .kpi-row, .benefits, .compare { grid-template-columns: 1fr; }
-  .bill-pdf .bb { grid-template-columns: 1fr; }
-  .page-body { overflow-x: auto; }
-  table.fin { font-size: 11px; }
-  table.fin th, table.fin td {
-    padding: 6px;
-    white-space: nowrap;
-  }
-  .big-num { font-size: 24px; }
-  .table-wrap { max-height: min(60vh, 420px); }
 }
 
 @media screen and (max-width: 420px) {
-  .incl5, .incl4, .diff-row, .icon-row, .steps, .kpi4 { grid-template-columns: 1fr; }
-  .cover-title h1 { font-size: 30px; }
+  .incl5, .incl4, .diff-row, .icon-row, .steps { grid-template-columns: 1fr; }
+  .incl5 .box:last-child { grid-column: auto; }
+  .cover-title h1 { font-size: 28px; }
+  .cover-brand .name { font-size: 18px; }
 }
 
 @media print {
@@ -1047,5 +1093,8 @@ table.fin tr.is-median td {
     object-position: center 52% !important;
   }
   .page:last-child { page-break-after: auto; }
+  .chart { height: 118px; aspect-ratio: auto; }
+  .chart-wide { height: 168px; aspect-ratio: auto; }
+  .chart-fio { height: 100px; aspect-ratio: auto; }
   @page { size: A4; margin: 0; }
 }

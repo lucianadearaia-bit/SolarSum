@@ -582,8 +582,8 @@
       const y2 = h - pad - h2;
       bars += `<rect x="${x + 3}" y="${y1}" width="${gw * 0.34}" height="${h1}" fill="#0b1f3a"/>`;
       bars += `<rect x="${x + gw * 0.42}" y="${y2}" width="${gw * 0.34}" height="${h2}" fill="#f5a623"/>`;
-      if (seriesA[i]) bars += `<text x="${x + 3 + gw * 0.17}" y="${y1 - 3}" text-anchor="middle" font-size="7" fill="#0b1f3a">${Math.round(seriesA[i])}</text>`;
-      if (seriesB[i]) bars += `<text x="${x + gw * 0.59}" y="${y2 - 3}" text-anchor="middle" font-size="7" fill="#c47a00">${Math.round(seriesB[i])}</text>`;
+      if (gw >= 52 && seriesA[i]) bars += `<text x="${x + 3 + gw * 0.17}" y="${y1 - 3}" text-anchor="middle" font-size="7" fill="#0b1f3a">${Math.round(seriesA[i])}</text>`;
+      if (gw >= 52 && seriesB[i]) bars += `<text x="${x + gw * 0.59}" y="${y2 - 3}" text-anchor="middle" font-size="7" fill="#c47a00">${Math.round(seriesB[i])}</text>`;
       bars += `<text x="${x + gw / 2}" y="${h - 8}" text-anchor="middle" font-size="9" fill="#5b6b7c">${lab}</text>`;
     });
     svg.innerHTML = `<rect width="${w}" height="${h}" fill="#fff"/>${bars}`;
@@ -601,7 +601,7 @@
       const bh = (values[i] / max) * (h - pad - top);
       const y = h - pad - bh;
       bars += `<rect x="${x + 4}" y="${y}" width="${gw - 8}" height="${bh}" rx="2" fill="${color || "#f5a623"}"/>`;
-      if (values[i]) {
+      if (gw >= 36 && values[i]) {
         bars += `<text x="${x + gw / 2}" y="${y - 3}" text-anchor="middle" font-size="7" fill="#0b1f3a">${Math.round(values[i])}</text>`;
       }
       bars += `<text x="${x + gw / 2}" y="${h - 8}" text-anchor="middle" font-size="9" fill="#5b6b7c">${lab}</text>`;
@@ -904,6 +904,9 @@
       persist();
     });
     window.addEventListener("resize", syncToolbarHeight);
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener("resize", syncToolbarHeight);
+    }
     syncToolbarHeight();
   }
 
