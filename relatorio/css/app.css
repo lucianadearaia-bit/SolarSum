@@ -893,38 +893,34 @@ table.fin tr.is-median td {
 
 @media screen and (max-width: 1100px) {
   html, body {
-    height: 100%;
-    overflow: hidden;
+    height: auto;
+    overflow-x: hidden;
+    overflow-y: auto;
   }
-  body {
-    display: flex;
-    flex-direction: column;
-  }
+  body { display: block; }
   .toolbar {
-    position: relative;
-    flex-shrink: 0;
+    position: sticky;
+    top: 0;
   }
   .app {
     grid-template-columns: 1fr;
-    flex: 1 1 auto;
     min-height: 0;
     height: auto;
   }
   .app:not(.preview-only) .preview { display: none; }
   .editor, .preview {
-    height: 100%;
+    height: auto;
     max-height: none;
-    overflow-x: hidden;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
+    overflow: visible;
   }
   .editor { border-right: 0; }
   .tabs {
-    top: 0;
-    z-index: 6;
+    position: sticky;
+    top: var(--toolbar-h);
+    z-index: 40;
   }
   .editor .panel {
-    scroll-margin-top: 56px;
+    scroll-margin-top: 0;
   }
   .preview { padding: 16px 10px 32px; }
   .page, .sheet {
@@ -1009,21 +1005,23 @@ table.fin tr.is-median td {
 }
 
 @media screen and (max-width: 720px) {
-  :root { --toolbar-h: 160px; }
+  :root { --toolbar-h: 148px; }
   .toolbar {
     align-items: flex-start;
-    gap: 8px;
-    padding: max(8px, env(safe-area-inset-top)) max(10px, env(safe-area-inset-right)) 8px max(10px, env(safe-area-inset-left));
+    gap: 6px;
+    padding: max(6px, env(safe-area-inset-top)) max(10px, env(safe-area-inset-right)) 8px max(10px, env(safe-area-inset-left));
   }
   .brand { margin-right: 0; }
+  .brand img { width: 28px; height: 28px; }
   .toolbar-nav {
     flex: 1 1 100%;
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 8px;
+    gap: 6px;
   }
   .toolbar-nav button {
-    min-height: 42px;
+    min-height: 36px;
+    padding: 8px 8px;
     justify-content: center;
     text-align: center;
     white-space: normal;
@@ -1033,7 +1031,7 @@ table.fin tr.is-median td {
     flex: 1 1 100%;
     flex-wrap: wrap;
     margin-left: 0;
-    padding: 8px 0 0;
+    padding: 6px 0 0;
     border-left: 0;
     border-top: 1px solid rgba(245, 166, 35, 0.35);
   }
@@ -1087,7 +1085,7 @@ table.fin tr.is-median td {
     display: block;
   }
   body { background: #fff; }
-  .app { display: block; height: auto; min-height: 0; }
+  .app { display: block; }
   .preview { padding: 0; overflow: visible; max-height: none; background: #fff; }
   .page, .cover, .cover-photo {
     -webkit-print-color-adjust: exact;

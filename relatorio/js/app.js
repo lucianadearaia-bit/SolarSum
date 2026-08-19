@@ -817,19 +817,10 @@
 
   function scrollFormToStart() {
     const editor = document.querySelector(".editor");
-    const panel = document.querySelector(".editor .panel.active");
-    const isNarrow = window.matchMedia("(max-width: 1100px)").matches;
-    const reset = () => {
-      if (editor) editor.scrollTop = 0;
-      if (isNarrow && panel) {
-        panel.scrollIntoView({ block: "start", inline: "nearest", behavior: "auto" });
-      }
-    };
-    reset();
-    requestAnimationFrame(() => {
-      reset();
-      requestAnimationFrame(reset);
-    });
+    const preview = document.getElementById("preview");
+    if (editor) editor.scrollTop = 0;
+    if (preview) preview.scrollTop = 0;
+    window.scrollTo(0, 0);
   }
 
   function setTab(tab) {
@@ -860,7 +851,10 @@
       btn.classList.toggle("active", btn.dataset.view === view);
     });
     window.scrollTo(0, 0);
-    syncToolbarHeight();
+    requestAnimationFrame(() => {
+      syncToolbarHeight();
+      scrollFormToStart();
+    });
   }
 
   function initToolbar() {
@@ -906,6 +900,10 @@
     window.addEventListener("resize", syncToolbarHeight);
     if (window.visualViewport) {
       window.visualViewport.addEventListener("resize", syncToolbarHeight);
+    }
+    if (typeof ResizeObserver !== "undefined") {
+      const toolbar = document.querySelector(".toolbar");
+      if (toolbar) new ResizeObserver(syncToolbarHeight).observe(toolbar);
     }
     syncToolbarHeight();
   }
