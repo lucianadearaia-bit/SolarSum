@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>SolarSun — Proposta Comercial</title>
   <link rel="icon" href="assets/logo.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -20,7 +20,7 @@
       </div>
     </div>
     <nav class="toolbar-nav">
-      <button type="button" data-view="edit">Dados</button>
+      <button type="button" class="active" data-view="edit">Dados</button>
       <button type="button" data-view="preview">Proposta</button>
       <button type="button" class="primary" id="btnPrint">Impressão da Proposta</button>
       <button type="button" id="btnReset">Limpar Dados</button>
@@ -56,6 +56,7 @@
         <h3>Dados da vistoria</h3>
         <div class="grid-2">
           <div class="field"><label>Cliente</label><input data-path="checklist.cliente" /></div>
+          <div class="field"><label>CPF / CNPJ</label><input data-path="checklist.cpfCnpj" type="text" maxlength="18" placeholder="000.000.000-00" autocomplete="off" spellcheck="false" /></div>
           <div class="field"><label>Nº do projeto</label><input data-path="checklist.numeroProjeto" /></div>
           <div class="field span-2"><label>Endereço</label><input data-path="checklist.endereco" /></div>
           <div class="field"><label>E-mail</label><input type="email" data-path="checklist.email" /></div>
@@ -65,27 +66,21 @@
           <div class="field"><label>Tipo de telhado</label><input data-path="checklist.tipoTelhado" /></div>
           <div class="field"><label>Área mínima de telhado (m²)</label><input data-path="checklist.areaTelhado" /></div>
           <div class="field span-2"><label>Observações</label><textarea data-path="checklist.observacoes"></textarea></div>
+          <hr class="form-rule" />
           <div class="field"><label>Responsável pela conferência</label><input data-path="checklist.responsavel" /></div>
           <div class="field"><label>Data da conferência</label><input type="date" data-path="checklist.dataConferencia" /></div>
+          <div class="field"><label>Telefone de Contato</label><input data-path="checklist.telefoneContato" type="text" maxlength="15" placeholder="(00) 00000-0000" autocomplete="tel" spellcheck="false" /></div>
+          <div class="field"><label>Email</label><input type="email" data-path="checklist.emailContato" placeholder="email@exemplo.com" autocomplete="email" spellcheck="false" /></div>
         </div>
       </section>
 
       <section class="panel" id="tab-proposta">
         <h2>Proposta / Orçamento</h2>
-        <h3>Dados da empresa</h3>
-        <p class="note">Aparecem na página de aceite do cliente.</p>
-        <div class="grid-2">
-          <div class="field"><label>CNPJ</label><input data-path="empresa.cnpj" type="text" maxlength="18" placeholder="00.000.000/0000-00" autocomplete="off" spellcheck="false" /></div>
-          <div class="field"><label>Telefone</label><input data-path="empresa.telefone" type="text" maxlength="15" placeholder="(00) 00000-0000" autocomplete="tel" spellcheck="false" /></div>
-          <div class="field span-2"><label>Endereço</label><input data-path="empresa.endereco" placeholder="Rua, número, cidade / UF" /></div>
-        </div>
         <h3>Identificação</h3>
         <div class="grid-2">
           <div class="field"><label>Número da proposta</label><input data-path="proposta.numero" /></div>
           <div class="field"><label>Data</label><input type="date" data-path="proposta.data" /></div>
           <div class="field"><label>Validade da proposta</label><input type="date" data-path="proposta.validade" /></div>
-          <div class="field"><label>Cliente</label><input data-path="proposta.cliente" /></div>
-          <div class="field"><label>CPF / CNPJ</label><input data-path="proposta.cpfCnpj" type="text" maxlength="18" placeholder="000.000.000-00" autocomplete="off" spellcheck="false" /></div>
           <div class="field"><label>Classe</label><input data-path="proposta.classe" /></div>
           <div class="field"><label>Concessionária</label><input data-path="proposta.concessionaria" /></div>
           <div class="field"><label>Mês / ano da fatura</label><input data-path="proposta.mesAnoFatura" type="text" maxlength="7" placeholder="10/2026" autocomplete="off" spellcheck="false" /></div>
@@ -152,6 +147,7 @@
 
       <section class="panel" id="tab-tarifas">
         <h2>Tarifas e viabilidade</h2>
+        <p class="note">Tarifas da concessionária usadas na simulação do Fio B (Lei 14.300/2022), na página 4 da proposta.</p>
         <div class="grid-2">
           <div class="field"><label>TUSD (R$/kWh)</label><input type="number" step="0.0001" data-path="tarifas.tusd" /></div>
           <div class="field"><label>TE (R$/kWh)</label><input type="number" step="0.0001" data-path="tarifas.te" /></div>
@@ -171,6 +167,16 @@
           </div>
           <div class="field"><label>Taxa anual reajuste concessionária</label><input data-path="tarifas.taxaReajustePct" inputmode="decimal" placeholder="0,00%" autocomplete="off" /></div>
         </div>
+        <h3>Resultados Fio B (Lei 14.300/2022)</h3>
+        <p class="note">Calculados automaticamente e exibidos na página 4 da proposta.</p>
+        <div class="grid-2">
+          <div class="field calc"><label>Fio B corrigido (R$/kWh)</label><input id="outFioBCorr" readonly /></div>
+          <div class="field calc"><label>% Fio B / tarifa</label><input id="outPctFio" readonly /></div>
+          <div class="field calc"><label>Tarifa com tributos (Tr Cons)</label><input id="outTrCons" readonly /></div>
+          <div class="field calc"><label>Pagamento mediano mensal</label><input id="outMedianaFio" readonly /></div>
+          <div class="field calc"><label>Compensação instantânea</label><input id="outCompInst" readonly /></div>
+          <div class="field calc"><label>Compensação por crédito</label><input id="outCompCred" readonly /></div>
+        </div>
       </section>
 
       <section class="panel" id="tab-tabela4bi">
@@ -186,6 +192,7 @@
       <!-- CAPA -->
       <section class="page cover">
         <img class="cover-photo" src="assets/hero.jpg" alt="" />
+        <img class="cover-wave" src="assets/cover-wave.png" alt="" />
         <div class="cover-inner">
           <div class="cover-top">
             <img class="cover-logo" src="assets/logo.png" alt="Logo SolarSun" />
@@ -206,12 +213,108 @@
               <div class="row"><img src="assets/icon-user-alt.png" alt="" /><span>Validade da proposta: <b id="cValidade">—</b></span></div>
             </div>
           </div>
-          <div class="cover-social"><span>f</span><span>ig</span><span>in</span><span>w</span></div>
-          <img class="cover-accent" src="assets/accent-lines.png" alt="" />
+          <div class="cover-social">
+            <img src="assets/social-facebook.svg" alt="Facebook" />
+            <img src="assets/social-instagram.svg" alt="Instagram" />
+            <img src="assets/social-linkedin.svg" alt="LinkedIn" />
+            <img src="assets/social-whatsapp.svg" alt="WhatsApp" />
+          </div>
         </div>
       </section>
 
-      <!-- P2 ANALISE DE INVESTIMENTO (PDF p.2) -->
+      <!-- P2 EQUIPAMENTOS -->
+      <section class="page inner">
+        <header class="page-head">
+          <div class="brand-block">
+            <img src="assets/logo.png" alt="" />
+            <div>
+              <div class="name" data-bind="empresa.nome">SolarSun</div>
+              <div class="tag" data-bind="empresa.tagline">energia para gerações</div>
+            </div>
+          </div>
+          <div class="head-right">
+            <span>Proposta Comercial nº <b class="js-num">—</b></span>
+            <span class="page-badge">PÁG. 2/7</span>
+          </div>
+        </header>
+        <div class="page-body">
+          <div class="title-block">
+            <h2>Equipamentos do Sistema</h2>
+            <p>Solução recomendada para máxima performance e segurança.</p>
+            <div class="gold-line"></div>
+          </div>
+          <article class="equip-card">
+            <img class="photo" src="assets/eq-modulo.png" alt="Módulo fotovoltaico" />
+            <div>
+              <h3>Módulo Fotovoltaico Premium</h3>
+              <div class="spec" id="specModulo">Conforme dimensionamento da proposta</div>
+              <ul>
+                <li>Alta eficiência e maior geração de energia.</li>
+                <li>Excelente durabilidade e confiabilidade.</li>
+                <li>Resistência a condições climáticas adversas.</li>
+                <li>Performance consistente por mais de 25 anos.</li>
+              </ul>
+            </div>
+          </article>
+          <article class="equip-card">
+            <img class="photo" src="assets/eq-inversor.png" alt="Inversor" />
+            <div>
+              <h3>Inversor de Alta Performance</h3>
+              <div class="spec" id="specInversor">Conforme dimensionamento da proposta</div>
+              <ul>
+                <li>Conversão eficiente para máxima geração.</li>
+                <li>Monitoramento inteligente em tempo real.</li>
+                <li>Proteções elétricas integradas e certificadas.</li>
+                <li>Operação confiável e silenciosa.</li>
+              </ul>
+            </div>
+          </article>
+          <article class="equip-card">
+            <img class="photo" src="assets/eq-estrutura.jpg" alt="Estrutura de fixação" />
+            <div>
+              <h3>Estrutura de Fixação Reforçada</h3>
+              <div class="spec" id="specEstrutura">Conforme vistoria e tipo de telhado</div>
+              <ul>
+                <li>Fixação segura e estável para o sistema.</li>
+                <li>Alta resistência mecânica e anticorrosiva.</li>
+                <li>Adaptação perfeita ao tipo de telhado.</li>
+                <li>Longa vida útil e baixa necessidade de manutenção.</li>
+              </ul>
+            </div>
+          </article>
+          <p style="text-align:center;font-weight:800;color:#0b1f3a;margin:10px 0 6px">O que está incluso?</p>
+          <div class="incl5">
+            <div class="box">
+              <b>Projeto Executivo</b>
+              <img src="assets/incl-projeto.svg" alt="" />
+              <span>Dimensionamento personalizado para máximo desempenho.</span>
+            </div>
+            <div class="box">
+              <b>Instalação Profissional</b>
+              <img src="assets/incl-instalacao.svg" alt="" />
+              <span>Equipe especializada e instalação segura e eficiente.</span>
+            </div>
+            <div class="box">
+              <b>Homologação</b>
+              <img src="assets/incl-homologacao.png" alt="" />
+              <span>Cuidamos de todo o processo junto à concessionária.</span>
+            </div>
+            <div class="box">
+              <b>Monitoramento</b>
+              <img src="assets/incl-monitoramento.svg" alt="" />
+              <span>Acompanhe a geração de energia em tempo real pelo app.</span>
+            </div>
+            <div class="box">
+              <b>Suporte Técnico</b>
+              <img src="assets/incl-suporte.png" alt="" />
+              <span>Atendimento dedicado antes, durante e após a instalação.</span>
+            </div>
+          </div>
+        </div>
+        <footer class="page-foot">Garantia de performance e suporte técnico dedicado pós-instalação.</footer>
+      </section>
+
+      <!-- P3 ANALISE DE INVESTIMENTO -->
       <section class="page inner">
         <header class="page-head">
           <div class="brand-block">
@@ -223,7 +326,7 @@
           </div>
           <div class="head-right">
             <span>Proposta Comercial nº <b id="h2Numero">—</b></span>
-            <span class="page-badge">PÁG. 2/6</span>
+            <span class="page-badge">PÁG. 3/7</span>
           </div>
         </header>
         <div class="page-body">
@@ -289,7 +392,7 @@
         <footer class="page-foot">Garantia de performance e suporte técnico dedicado pós-instalação.</footer>
       </section>
 
-      <!-- P3 VIABILIDADE -->
+      <!-- P4 FIO B -->
       <section class="page inner">
         <header class="page-head">
           <div class="brand-block">
@@ -301,7 +404,85 @@
           </div>
           <div class="head-right">
             <span>Proposta Comercial nº <b class="js-num">—</b></span>
-            <span class="page-badge">PÁG. 3/6</span>
+            <span class="page-badge">PÁG. 4/7</span>
+          </div>
+        </header>
+        <div class="page-body">
+          <div class="title-block">
+            <h2>Simulação de faturamento GD</h2>
+            <p>Lei 14.300/2022 — cobrança gradual do Fio B sobre a energia injetada na rede.</p>
+            <div class="gold-line"></div>
+          </div>
+          <div class="kpi4 fio-kpi">
+            <div class="card"><div class="lbl">Consumo do cliente</div><div class="val" id="fioCons">—</div></div>
+            <div class="card"><div class="lbl">Geração do SFV</div><div class="val" id="fioGer">—</div></div>
+            <div class="card"><div class="lbl">Padrão de consumo</div><div class="val" id="fioPadrao" style="font-size:13px">—</div></div>
+            <div class="card"><div class="lbl">COSIP</div><div class="val" id="fioCosip">—</div></div>
+          </div>
+          <div class="two" style="margin-top:8px">
+            <div class="bill-pdf">
+              <div class="bh" id="fioConcessionaria">Tarifas da concessionária</div>
+              <div class="bb">
+                <div><div class="k">TUSD</div><div class="v" id="fioTusd">—</div></div>
+                <div><div class="k">TE</div><div class="v" id="fioTe">—</div></div>
+                <div><div class="k">Tarifa</div><div class="v" id="fioTarifa">—</div></div>
+                <div><div class="k">Fio B</div><div class="v" id="fioBVal">—</div></div>
+                <div><div class="k">Subsídio Fio B</div><div class="v" id="fioSub">—</div></div>
+                <div><div class="k">Fio B corrigido</div><div class="v" id="fioBCorr">—</div></div>
+                <div><div class="k">% Fio B / tarifa</div><div class="v" id="fioPctTr">—</div></div>
+                <div><div class="k">Tr Cons</div><div class="v" id="fioTrCons">—</div></div>
+                <div><div class="k">PIS</div><div class="v" id="fioPis">—</div></div>
+                <div><div class="k">COFINS</div><div class="v" id="fioCofins">—</div></div>
+                <div><div class="k">ICMS</div><div class="v" id="fioIcms">—</div></div>
+                <div><div class="k">Consumo (R$)</div><div class="v" id="fioValorCons">—</div></div>
+              </div>
+            </div>
+            <div class="fio-side">
+              <div class="bill-pdf">
+                <div class="bh">Compensação de energia</div>
+                <div class="bb">
+                  <div><div class="k">Compensação instantânea</div><div class="v" id="fioCompInst">—</div></div>
+                  <div><div class="k">Compensação por crédito</div><div class="v" id="fioCompCred">—</div></div>
+                  <div><div class="k">% uso da rede</div><div class="v" id="fioPctCred">—</div></div>
+                  <div><div class="k">Tarifa do crédito (início)</div><div class="v" id="fioTarifaCred">—</div></div>
+                </div>
+              </div>
+              <p class="bill-note">A compensação instantânea ocorre no momento da geração. A compensação por crédito usa a rede e passa a pagar o Fio B de forma gradual.</p>
+              <div class="inv-banner">
+                <div class="l">Pagamento médio mensal (mediana)</div>
+                <div class="r">
+                  <strong id="fioMediana">—</strong>
+                  <span class="inv-pag">após o SFV</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <p class="muted" style="margin:10px 0 4px;font-weight:700;color:#0b1f3a">Resultados — ano de faturamento</p>
+          <svg class="chart-fio" id="chartFio" viewBox="0 0 640 120" preserveAspectRatio="none"></svg>
+          <table class="fin compact">
+            <thead>
+              <tr><th>Ano</th><th>Fio B cobrado</th><th>Tarifa do crédito</th><th>Pagamento médio mensal</th></tr>
+            </thead>
+            <tbody id="fioBody"></tbody>
+          </table>
+          <p class="fine">A Lei 14.300/2022 prevê a cobrança progressiva da TUSD Fio B sobre a energia injetada na rede, até a integralidade. Valores estimados com as tarifas e o padrão de consumo informados nesta proposta.</p>
+        </div>
+        <footer class="page-foot">Garantia de performance e suporte técnico dedicado pós-instalação.</footer>
+      </section>
+
+      <!-- P5 VIABILIDADE -->
+      <section class="page inner">
+        <header class="page-head">
+          <div class="brand-block">
+            <img src="assets/logo.png" alt="" />
+            <div>
+              <div class="name" data-bind="empresa.nome">SolarSun</div>
+              <div class="tag" data-bind="empresa.tagline">energia para gerações</div>
+            </div>
+          </div>
+          <div class="head-right">
+            <span>Proposta Comercial nº <b class="js-num">—</b></span>
+            <span class="page-badge">PÁG. 5/7</span>
           </div>
         </header>
         <div class="page-body">
@@ -334,7 +515,7 @@
         <footer class="page-foot">Garantia de performance e suporte técnico dedicado pós-instalação.</footer>
       </section>
 
-      <!-- P4 EQUIPAMENTOS -->
+      <!-- P6 INSTALACOES -->
       <section class="page inner">
         <header class="page-head">
           <div class="brand-block">
@@ -346,79 +527,7 @@
           </div>
           <div class="head-right">
             <span>Proposta Comercial nº <b class="js-num">—</b></span>
-            <span class="page-badge">PÁG. 4/6</span>
-          </div>
-        </header>
-        <div class="page-body">
-          <div class="title-block">
-            <h2>Equipamentos do Sistema</h2>
-            <p>Solução recomendada para máxima performance e segurança.</p>
-            <div class="gold-line"></div>
-          </div>
-          <article class="equip-card">
-            <img class="photo" src="assets/eq-modulo.png" alt="Módulo fotovoltaico" />
-            <div>
-              <h3>Módulo Fotovoltaico Premium</h3>
-              <div class="spec" id="specModulo">Conforme dimensionamento da proposta</div>
-              <ul>
-                <li>Alta eficiência e maior geração de energia.</li>
-                <li>Excelente durabilidade e confiabilidade.</li>
-                <li>Resistência a condições climáticas adversas.</li>
-                <li>Performance consistente por mais de 25 anos.</li>
-              </ul>
-            </div>
-          </article>
-          <article class="equip-card">
-            <img class="photo" src="assets/eq-inversor.png" alt="Inversor" />
-            <div>
-              <h3>Inversor de Alta Performance</h3>
-              <div class="spec" id="specInversor">Conforme dimensionamento da proposta</div>
-              <ul>
-                <li>Conversão eficiente para máxima geração.</li>
-                <li>Monitoramento inteligente em tempo real.</li>
-                <li>Proteções elétricas integradas e certificadas.</li>
-                <li>Operação confiável e silenciosa.</li>
-              </ul>
-            </div>
-          </article>
-          <article class="equip-card">
-            <img class="photo" src="assets/eq-estrutura.jpg" alt="Estrutura de fixação" />
-            <div>
-              <h3>Estrutura de Fixação Reforçada</h3>
-              <div class="spec" id="specEstrutura">Conforme vistoria e tipo de telhado</div>
-              <ul>
-                <li>Fixação segura e estável para o sistema.</li>
-                <li>Alta resistência mecânica e anticorrosiva.</li>
-                <li>Adaptação perfeita ao tipo de telhado.</li>
-                <li>Longa vida útil e baixa necessidade de manutenção.</li>
-              </ul>
-            </div>
-          </article>
-          <p style="text-align:center;font-weight:800;color:#0b1f3a;margin:10px 0 6px">O que está incluso?</p>
-          <div class="incl5">
-            <div class="box"><img src="assets/icon-energia.png" alt="" /><b>Projeto Executivo</b><span>Dimensionamento personalizado para máximo desempenho.</span></div>
-            <div class="box"><img src="assets/icon-cliente.png" alt="" /><b>Instalação Profissional</b><span>Equipe especializada e instalação segura e eficiente.</span></div>
-            <div class="box"><img src="assets/icon-doc.png" alt="" /><b>Homologação</b><span>Cuidamos de todo o processo junto à concessionária.</span></div>
-            <div class="box"><img src="assets/icon-alvo.png" alt="" /><b>Monitoramento</b><span>Acompanhe a geração de energia em tempo real pelo app.</span></div>
-            <div class="box"><img src="assets/icon-phone.png" alt="" /><b>Suporte Técnico</b><span>Atendimento dedicado antes, durante e após a instalação.</span></div>
-          </div>
-        </div>
-        <footer class="page-foot">Garantia de performance e suporte técnico dedicado pós-instalação.</footer>
-      </section>
-
-      <!-- P5 INSTALACOES -->
-      <section class="page inner">
-        <header class="page-head">
-          <div class="brand-block">
-            <img src="assets/logo.png" alt="" />
-            <div>
-              <div class="name" data-bind="empresa.nome">SolarSun</div>
-              <div class="tag" data-bind="empresa.tagline">energia para gerações</div>
-            </div>
-          </div>
-          <div class="head-right">
-            <span>Proposta Comercial nº <b class="js-num">—</b></span>
-            <span class="page-badge">PÁG. 5/6</span>
+            <span class="page-badge">PÁG. 6/7</span>
           </div>
         </header>
         <div class="page-body">
@@ -472,16 +581,32 @@
           </div>
           <p style="text-align:center;font-weight:800;color:#0b1f3a;margin:12px 0 8px">Diferenciais SolarSun</p>
           <div class="diff-row">
-            <div><div class="ico">👥</div><b>Equipe Especializada</b><span>Profissionais certificados e treinamento contínuo em novas tecnologias.</span></div>
-            <div><div class="ico">⚙</div><b>Projetos Personalizados</b><span>Soluções sob medida para cada perfil de consumo e necessidade.</span></div>
-            <div><div class="ico">✓</div><b>Acabamento Profissional</b><span>Instalações organizadas, detalhadas e com alto padrão de qualidade.</span></div>
-            <div><div class="ico">☎</div><b>Suporte Pós-venda</b><span>Acompanhamento contínuo e atendimento sempre que precisar.</span></div>
+            <div>
+              <img class="ico" src="assets/diff-equipe.png" alt="" />
+              <b>Equipe Especializada</b>
+              <span>Profissionais certificados e treinamento contínuo em novas tecnologias.</span>
+            </div>
+            <div>
+              <img class="ico" src="assets/diff-projetos.png" alt="" />
+              <b>Projetos Personalizados</b>
+              <span>Soluções sob medida para cada perfil de consumo e necessidade.</span>
+            </div>
+            <div>
+              <img class="ico" src="assets/diff-acabamento.png" alt="" />
+              <b>Acabamento Profissional</b>
+              <span>Instalações organizadas, detalhadas e com alto padrão de qualidade.</span>
+            </div>
+            <div>
+              <img class="ico" src="assets/diff-suporte.png" alt="" />
+              <b>Suporte Pós-venda</b>
+              <span>Acompanhamento contínuo e atendimento sempre que precisar.</span>
+            </div>
           </div>
         </div>
         <footer class="page-foot">Confiança construída em cada projeto. Performance que gera economia todos os dias.</footer>
       </section>
 
-      <!-- P6 ACEITE -->
+      <!-- P7 ACEITE -->
       <section class="page inner">
         <header class="page-head">
           <div class="brand-block">
@@ -493,7 +618,7 @@
           </div>
           <div class="head-right">
             <span>Proposta Comercial nº <b class="js-num">—</b></span>
-            <span class="page-badge">PÁG. 6/6</span>
+            <span class="page-badge">PÁG. 7/7</span>
           </div>
         </header>
         <div class="page-body">
@@ -505,25 +630,69 @@
           <div id="checkResumo" class="two"></div>
           <h2 class="sec" style="margin-top:12px">Anotações e observações</h2>
           <div class="obs-box" id="obsBox">—</div>
-          <div class="accept">
-            <h3>ACEITE DO CLIENTE</h3>
-            <div class="sign-grid">
-              <div>
-                <div>Nome / Razão social</div>
-                <div class="sign-line" id="aNome"></div>
-                <div>CPF / CNPJ</div>
-                <div class="sign-line" id="aDoc"></div>
-                <div>Assinatura do cliente</div>
-                <div class="sign-line"></div>
+          <div class="accept-row">
+            <div class="accept accept-sheet">
+              <h3>ACEITE DO CLIENTE</h3>
+              <div class="accept-grid">
+                <div>
+                  <div>Nome / Razão social</div>
+                  <div class="sign-line" id="aNome"></div>
+                </div>
+                <div>
+                  <div>CPF / CNPJ</div>
+                  <div class="sign-line" id="aDoc"></div>
+                </div>
+                <div>
+                  <div>Telefone</div>
+                  <div class="sign-line" id="aTelCli"></div>
+                </div>
+                <div>
+                  <div>E-mail</div>
+                  <div class="sign-line" id="aEmailCli"></div>
+                </div>
+                <div class="span-2">
+                  <div>Endereço</div>
+                  <div class="sign-line" id="aEndCli"></div>
+                </div>
+                <div>
+                  <div>N° UC</div>
+                  <div class="sign-line" id="aUc"></div>
+                </div>
+                <div>
+                  <div>Potência disjuntor de entrada</div>
+                  <div class="sign-line" id="aDisjuntor"></div>
+                </div>
+                <div>
+                  <div>Tipo de telhado</div>
+                  <div class="sign-line" id="aTelhado"></div>
+                </div>
+                <div>
+                  <div>Área mínima de telhado (m²)</div>
+                  <div class="sign-line" id="aArea"></div>
+                </div>
+                <div class="span-2">
+                  <div>Forma de pagamento</div>
+                  <div class="sign-line" id="aPag"></div>
+                </div>
               </div>
-              <div>
-                <div id="aEmp" style="font-weight:800"></div>
-                <div>CNPJ: <span id="aCnpj">—</span></div>
-                <div>Telefone: <span id="aTel">—</span></div>
-                <div>Endereço: <span id="aEnd">—</span></div>
-                <div style="margin-top:18px">Responsável pela conferência</div>
-                <div class="sign-line" id="aResp"></div>
-                <div>Data: <span id="aData">—</span> · Projeto: <span id="aProj">—</span></div>
+              <div class="accept-signoff">
+                <div class="accept-sign">
+                  <h3>Assinatura do cliente</h3>
+                  <div class="sign-line sign-space"></div>
+                </div>
+                <div class="accept-company">
+                  <h3 id="aEmp">SolarSun</h3>
+                  <div>CNPJ: 54.322.670/0001-53</div>
+                  <div class="accept-addr">
+                    <div>Rua Benjamin Constant, 132 | Sala 2</div>
+                    <div>Escola Agrícola • Blumenau/SC • CEP 89037-500</div>
+                  </div>
+                  <div>Responsável pela conferência</div>
+                  <div class="sign-line" id="aResp"></div>
+                  <div>Telefone de Contato: <span id="aTelContato">—</span></div>
+                  <div>Email: <span id="aEmailContato">—</span></div>
+                  <div class="accept-foot">Data: <span id="aData">—</span> · Projeto: <span id="aProj">—</span></div>
+                </div>
               </div>
             </div>
           </div>

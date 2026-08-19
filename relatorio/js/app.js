@@ -21,17 +21,18 @@
       empresa: {
         nome: "SolarSun",
         tagline: "energia para gerações",
-        cnpj: "",
-        telefone: "",
+        cnpj: "54.322.670/0001-53",
+        telefone: "(44) 98765-1000",
         whatsapp: "",
         email: "",
-        endereco: "",
+        endereco: "Rua Benjamin Constant, 132 | Sala 2\nEscola Agrícola • Blumenau/SC • CEP 89037-500",
         quemSomos: "A SolarSun nasceu com a missão de ajudar empresas, indústrias, comércios, propriedades rurais e famílias a gerar energia limpa e renovável, com engenharia responsável e os melhores equipamentos disponíveis. Nosso time cuida do seu projeto com atenção completa — da vistoria à homologação — para que as altas contas de energia fiquem no passado."
       },
       checklist: {
         itens,
         pagamento: "avista",
         cliente: "",
+        cpfCnpj: "",
         endereco: "",
         email: "",
         telefone: "",
@@ -41,13 +42,15 @@
         areaTelhado: "",
         observacoes: "",
         responsavel: "",
-        dataConferencia: new Date().toISOString().slice(0, 10),
+        dataConferencia: C.addDays(C.todayISO(), 15),
+        telefoneContato: "",
+        emailContato: "",
         numeroProjeto: ""
       },
       proposta: {
         numero: "",
-        data: new Date().toISOString().slice(0, 10),
-        validade: C.addDays(new Date().toISOString().slice(0, 10), 5),
+        data: C.todayISO(),
+        validade: C.addDays(C.todayISO(), 5),
         cliente: "",
         cpfCnpj: "",
         classe: "B1 Residencial",
@@ -142,7 +145,12 @@
     state.tarifas.pis = C.num(state.tarifas.pisPct, 0) / 100;
     state.tarifas.cofins = C.num(state.tarifas.cofinsPct, 0) / 100;
     state.tarifas.icms = C.num(state.tarifas.icmsPct, 0) / 100;
-    if (state.checklist.cliente && !p.cliente) p.cliente = state.checklist.cliente;
+    if (state.checklist.cliente) p.cliente = state.checklist.cliente;
+    if (state.checklist.cpfCnpj) p.cpfCnpj = state.checklist.cpfCnpj;
+  }
+
+  function defaultConferencia(data) {
+    return C.addDays(data || C.todayISO(), 15);
   }
 
   function persist() {
@@ -157,14 +165,27 @@
       state = Object.assign(defaultState(), saved);
       state.empresa = Object.assign(defaultState().empresa, saved.empresa || {});
       state.checklist = Object.assign(defaultState().checklist, saved.checklist || {});
+      const empresaFixa = defaultState().empresa;
+      state.empresa.cnpj = empresaFixa.cnpj;
+      state.empresa.telefone = empresaFixa.telefone;
+      state.empresa.endereco = empresaFixa.endereco;
       state.checklist.itens = Object.assign(defaultState().checklist.itens, (saved.checklist || {}).itens || {});
-      if (!state.checklist.dataConferencia) {
-        state.checklist.dataConferencia = defaultState().checklist.dataConferencia;
-      }
       state.proposta = Object.assign(defaultState().proposta, saved.proposta || {});
+      if (!state.checklist.cpfCnpj && state.proposta.cpfCnpj) {
+        state.checklist.cpfCnpj = state.proposta.cpfCnpj;
+      }
+      if (!state.checklist.cliente && state.proposta.cliente) {
+        state.checklist.cliente = state.proposta.cliente;
+      }
+      if (!state.proposta.data) state.proposta.data = C.todayISO();
       if (!state.proposta.tipoDesconto) state.proposta.tipoDesconto = "percentual";
       if ((state.proposta.descontoValor === undefined || state.proposta.descontoValor === "") && state.proposta.descontoPct) {
         state.proposta.descontoValor = state.proposta.descontoPct;
+      }
+      const dataProp = state.proposta.data || C.todayISO();
+      const autoConf = defaultConferencia(dataProp);
+      if (!state.checklist.dataConferencia || state.checklist.dataConferencia === C.todayISO()) {
+        state.checklist.dataConferencia = autoConf;
       }
       state.consumo = Object.assign(defaultState().consumo, saved.consumo || {});
       state.tarifas = Object.assign(defaultState().tarifas, saved.tarifas || {});
@@ -185,12 +206,11 @@
 
   const PHONE_PATHS = new Set([
     "checklist.telefone",
-    "empresa.telefone",
-    "empresa.whatsapp"
+    "checklist.telefoneContato"
   ]);
   const CPF_CNPJ_PATHS = new Set([
-    "proposta.cpfCnpj",
-    "empresa.cnpj"
+    "checklist.cpfCnpj",
+    "proposta.cpfCnpj"
   ]);
   const MONEY_PATHS = new Set([
     "proposta.valorInvestimento",
@@ -321,6 +341,10 @@
   }
 
   function fillForm() {
+    if (!state.proposta.data) state.proposta.data = C.todayISO();
+    if (!state.checklist.dataConferencia) {
+      state.checklist.dataConferencia = defaultConferencia(state.proposta.data);
+    }
     document.querySelectorAll("[data-path]").forEach((el) => {
       const val = getPath(state, el.dataset.path);
       if (el.type === "checkbox") el.checked = Boolean(val);
@@ -345,7 +369,7 @@
 
   function bindForm() {
     document.querySelectorAll("[data-path]").forEach((el) => {
-      const evt = el.type === "checkbox" || el.tagName === "SELECT" ? "change" : "input";
+      const evt = el.type === "checkbox" || el.type === "date" || el.tagName === "SELECT" ? "change" : "input";
       el.addEventListener(evt, () => {
         if (el.type === "checkbox") setPath(state, el.dataset.path, el.checked);
         else if (CPF_CNPJ_PATHS.has(el.dataset.path)) applyMask(el, formatCpfCnpj);
@@ -369,6 +393,17 @@
             }
           }
           updateDescontoUi();
+        }
+        else if (el.dataset.path === "proposta.data") {
+          const prevData = state.proposta.data;
+          const prevConf = state.checklist.dataConferencia;
+          setPath(state, el.dataset.path, el.value);
+          const stillAuto = !prevConf || prevConf === defaultConferencia(prevData) || prevConf === C.todayISO();
+          if (stillAuto) {
+            state.checklist.dataConferencia = defaultConferencia(el.value);
+            const confEl = document.querySelector("[data-path='checklist.dataConferencia']");
+            if (confEl) confEl.value = state.checklist.dataConferencia;
+          }
         }
         else setPath(state, el.dataset.path, el.value);
         render();
@@ -560,6 +595,26 @@
     svg.innerHTML = `<rect width="${w}" height="${h}" fill="#fff"/>${bars}`;
   }
 
+  function barChart1(svg, values, labels, color) {
+    if (!svg) return;
+    const w = 640, h = 120, pad = 28, top = 16;
+    const max = Math.max(1, ...values);
+    const n = labels.length || 1;
+    const gw = (w - pad * 2) / n;
+    let bars = "";
+    labels.forEach((lab, i) => {
+      const x = pad + i * gw;
+      const bh = (values[i] / max) * (h - pad - top);
+      const y = h - pad - bh;
+      bars += `<rect x="${x + 4}" y="${y}" width="${gw - 8}" height="${bh}" rx="2" fill="${color || "#f5a623"}"/>`;
+      if (values[i]) {
+        bars += `<text x="${x + gw / 2}" y="${y - 3}" text-anchor="middle" font-size="7" fill="#0b1f3a">${Math.round(values[i])}</text>`;
+      }
+      bars += `<text x="${x + gw / 2}" y="${h - 8}" text-anchor="middle" font-size="9" fill="#5b6b7c">${lab}</text>`;
+    });
+    svg.innerHTML = `<rect width="${w}" height="${h}" fill="#fff"/>${bars}`;
+  }
+
   function lineChart(svg, anos) {
     if (!svg) return;
     const w = 640, h = 168, pad = 36;
@@ -669,6 +724,62 @@
     setText("kFat", r.faturaMedia ? C.money(r.faturaMedia) : "—");
     lineChart(document.getElementById("chartViab"), r.anos);
 
+    const t = state.tarifas;
+    const rsKwh = (v) => "R$ " + C.nfmt(v, 4) + "/kWh";
+    setText("fioCons", r.consumoMedio ? C.nfmt(r.consumoMedio, 0) + " kWh/mês" : "—");
+    setText("fioGer", r.geracaoMedia ? C.nfmt(r.geracaoMedia, 0) + " kWh/mês" : "—");
+    setText("fioPadrao", t.padraoConsumo || "—");
+    setText("fioCosip", C.money(t.cosip));
+    setText("fioConcessionaria", p.concessionaria || "Tarifas da concessionária");
+    setText("fioTusd", rsKwh(t.tusd));
+    setText("fioTe", rsKwh(t.te));
+    setText("fioTarifa", rsKwh(r.tarifa));
+    setText("fioBVal", rsKwh(t.fioB));
+    setText("fioSub", C.nfmt(t.subsidio, 4));
+    setText("fioBCorr", rsKwh(r.fioBCorr));
+    setText("fioPctTr", C.pct(r.pctFio));
+    setText("fioTrCons", rsKwh(r.trCons));
+    setText("fioPis", C.pct(t.pis));
+    setText("fioCofins", C.pct(t.cofins));
+    setText("fioIcms", C.pct(t.icms));
+    setText("fioValorCons", C.money(r.valorConsumo));
+    setText("fioCompInst", C.nfmt(r.compInst, 0) + " kWh");
+    setText("fioCompCred", C.nfmt(r.compCred, 0) + " kWh");
+    setText("fioPctCred", C.pct(r.pctCredito));
+    setText("fioTarifaCred", r.fioAnos && r.fioAnos[0] ? rsKwh(r.fioAnos[0].tarifaAno) : "—");
+    setText("fioMediana", C.money(r.medianaFio));
+    const fioBody = document.getElementById("fioBody");
+    if (fioBody) {
+      fioBody.innerHTML = (r.fioAnos || []).map((x) => {
+        const isMed = Math.abs(x.pagamento - r.medianaFio) < 0.02;
+        return `<tr class="${isMed ? "is-median" : ""}">
+          <td>${x.ano}</td>
+          <td>${C.nfmt(x.share * 100, 0)}%</td>
+          <td>${rsKwh(x.tarifaAno)}</td>
+          <td>${C.money(x.pagamento)}</td>
+        </tr>`;
+      }).join("");
+    }
+    barChart1(
+      document.getElementById("chartFio"),
+      (r.fioAnos || []).map((x) => x.pagamento),
+      (r.fioAnos || []).map((x) => String(x.ano).slice(2)),
+      "#f5a623"
+    );
+
+    const outFioBCorr = document.getElementById("outFioBCorr");
+    if (outFioBCorr) outFioBCorr.value = rsKwh(r.fioBCorr);
+    const outPctFio = document.getElementById("outPctFio");
+    if (outPctFio) outPctFio.value = C.pct(r.pctFio);
+    const outTrCons = document.getElementById("outTrCons");
+    if (outTrCons) outTrCons.value = rsKwh(r.trCons);
+    const outMedianaFio = document.getElementById("outMedianaFio");
+    if (outMedianaFio) outMedianaFio.value = C.money(r.medianaFio);
+    const outCompInst = document.getElementById("outCompInst");
+    if (outCompInst) outCompInst.value = C.nfmt(r.compInst, 0) + " kWh";
+    const outCompCred = document.getElementById("outCompCred");
+    if (outCompCred) outCompCred.value = C.nfmt(r.compCred, 0) + " kWh";
+
     const checkResumo = document.getElementById("checkResumo");
     if (checkResumo) {
       checkResumo.innerHTML = CHECK_ITENS.map((item) => {
@@ -678,12 +789,20 @@
     }
     setText("obsBox", ch.observacoes || "—");
     setText("aNome", p.cliente || ch.cliente || "");
-    setText("aDoc", p.cpfCnpj || "");
+    setText("aDoc", ch.cpfCnpj || p.cpfCnpj || "");
+    setText("aTelCli", dash(ch.telefone));
+    setText("aEndCli", dash(ch.endereco));
+    setText("aEmailCli", dash(ch.email));
+    setText("aUc", dash(ch.uc));
+    setText("aDisjuntor", dash(ch.disjuntor));
+    setText("aTelhado", dash(ch.tipoTelhado));
+    setText("aArea", dash(ch.areaTelhado));
+    const pagAceite = { avista: "À vista", financiamento: "Financiamento", outros: "Outros" };
+    setText("aPag", pagAceite[ch.pagamento] || "—");
     setText("aEmp", e.nome);
-    setText("aCnpj", dash(e.cnpj));
-    setText("aTel", dash(e.telefone || ch.telefone));
-    setText("aEnd", dash(e.endereco));
     setText("aResp", ch.responsavel || "");
+    setText("aTelContato", dash(ch.telefoneContato));
+    setText("aEmailContato", dash(ch.emailContato));
     setText("aData", C.dateBR(ch.dataConferencia));
     setText("aProj", dash(ch.numeroProjeto));
 
@@ -702,24 +821,60 @@
     persist();
   }
 
+  function scrollFormToStart() {
+    const editor = document.querySelector(".editor");
+    const panel = document.querySelector(".editor .panel.active");
+    const isNarrow = window.matchMedia("(max-width: 1100px)").matches;
+    const reset = () => {
+      if (editor) editor.scrollTop = 0;
+      if (isNarrow && panel) {
+        panel.scrollIntoView({ block: "start", inline: "nearest", behavior: "auto" });
+      }
+    };
+    reset();
+    requestAnimationFrame(() => {
+      reset();
+      requestAnimationFrame(reset);
+    });
+  }
+
+  function setTab(tab) {
+    document.querySelectorAll("#tabs button").forEach((b) => b.classList.toggle("active", b.dataset.tab === tab));
+    document.querySelectorAll(".panel").forEach((p) => p.classList.toggle("active", p.id === "tab-" + tab));
+    scrollFormToStart();
+  }
+
   function initTabs() {
     document.getElementById("tabs").addEventListener("click", (ev) => {
       const btn = ev.target.closest("[data-tab]");
       if (!btn) return;
-      document.querySelectorAll("#tabs button").forEach((b) => b.classList.toggle("active", b === btn));
-      document.querySelectorAll(".panel").forEach((p) => p.classList.toggle("active", p.id === "tab-" + btn.dataset.tab));
+      setTab(btn.dataset.tab);
     });
   }
 
-  function initToolbar() {
+  function syncToolbarHeight() {
+    const toolbar = document.querySelector(".toolbar");
+    if (toolbar) {
+      document.documentElement.style.setProperty("--toolbar-h", toolbar.offsetHeight + "px");
+    }
+  }
+
+  function setView(view) {
     const app = document.getElementById("app");
+    app.classList.toggle("preview-only", view === "preview");
     document.querySelectorAll("[data-view]").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        app.classList.toggle("preview-only", btn.dataset.view === "preview");
-      });
+      btn.classList.toggle("active", btn.dataset.view === view);
+    });
+    window.scrollTo(0, 0);
+    syncToolbarHeight();
+  }
+
+  function initToolbar() {
+    document.querySelectorAll("[data-view]").forEach((btn) => {
+      btn.addEventListener("click", () => setView(btn.dataset.view));
     });
     document.getElementById("btnPrint").addEventListener("click", () => {
-      app.classList.add("preview-only");
+      setView("preview");
       setTimeout(() => window.print(), 80);
     });
     document.getElementById("btnReset").addEventListener("click", () => {
@@ -739,8 +894,7 @@
           state.tabela4bi = parse4biWorkbook(wb);
           renderTabela4bi();
           persist();
-          document.querySelectorAll("#tabs button").forEach((b) => b.classList.toggle("active", b.dataset.tab === "tabela4bi"));
-          document.querySelectorAll(".panel").forEach((p) => p.classList.toggle("active", p.id === "tab-tabela4bi"));
+          setTab("tabela4bi");
           setStatus4bi(state.tabela4bi.length + " kit(s) importado(s). Clique em um kit para aplicar.");
         } catch (err) {
           alert("Não foi possível ler o arquivo. Use o modelo Excel 4Bi.");
@@ -755,6 +909,8 @@
       renderUcs();
       persist();
     });
+    window.addEventListener("resize", syncToolbarHeight);
+    syncToolbarHeight();
   }
 
   restore();

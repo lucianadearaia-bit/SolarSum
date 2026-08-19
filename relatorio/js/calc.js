@@ -42,6 +42,14 @@
     return p * r * Math.pow(1 + r, n) / (Math.pow(1 + r, n) - 1);
   }
 
+  function todayISO() {
+    const d = new Date();
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+    return y + "-" + m + "-" + day;
+  }
+
   function dateBR(iso) {
     if (!iso) return "—";
     const p = String(iso).slice(0, 10).split("-");
@@ -54,7 +62,10 @@
     const d = new Date(iso + "T00:00:00");
     if (Number.isNaN(d.getTime())) return "";
     d.setDate(d.getDate() + days);
-    return d.toISOString().slice(0, 10);
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+    return y + "-" + m + "-" + day;
   }
 
   function compute(state) {
@@ -101,13 +112,17 @@
     const valorConsumo = consumoMedio * trCons;
 
     const fioShare = [0.15, 0.3, 0.45, 0.6, 0.75, 0.9, 0.9, 0.9, 1];
-    const pagamentosFio = fioShare.map((share) => {
-      const teLiq = te / ((1 - icms) * (1 - (pis + cofins)));
-      const tusdLiq = (tusd - share * fioBCorr) / (1 - (pis + cofins));
+    const anoFioBase = p.data ? Number(String(p.data).slice(0, 4)) : new Date().getFullYear();
+    const denTrib = (1 - icms) * (1 - (pis + cofins));
+    const denPisCofins = 1 - (pis + cofins);
+    const fioAnos = fioShare.map((share, i) => {
+      const teLiq = denTrib ? te / denTrib : 0;
+      const tusdLiq = denPisCofins ? (tusd - share * fioBCorr) / denPisCofins : 0;
       const tarifaAno = teLiq + tusdLiq;
-      return valorConsumo - (compInst * trCons + compCred * tarifaAno) + cosip;
+      const pagamento = valorConsumo - (compInst * trCons + compCred * tarifaAno) + cosip;
+      return { ano: anoFioBase + i, share, tarifaAno, pagamento };
     });
-    const sorted = pagamentosFio.slice().sort((a, b) => a - b);
+    const sorted = fioAnos.map((x) => x.pagamento).slice().sort((a, b) => a - b);
     const medianaFio = sorted.length % 2
       ? sorted[(sorted.length - 1) / 2]
       : (sorted[sorted.length / 2 - 1] + sorted[sorted.length / 2]) / 2;
@@ -203,8 +218,14 @@
       medianaFio,
       trCons,
       tarifa,
+      fioB,
       fioBCorr,
       pctFio,
+      pctCredito,
+      valorConsumo,
+      compInst,
+      compCred,
+      fioAnos,
       valorInvestimento,
       valorFinal,
       valorFinalCalc,
@@ -233,6 +254,6 @@
 
   global.SolarCalc = {
     MESES, HSP_PADRAO, PADRAO_CONSUMO,
-    num, money, nfmt, pct, pmt, dateBR, addDays, compute
+    num, money, nfmt, pct, pmt, todayISO, dateBR, addDays, compute
   };
 })(window);
