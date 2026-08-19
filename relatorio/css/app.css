@@ -79,8 +79,14 @@ body {
   gap: 10px;
   flex-wrap: wrap;
 }
-.toolbar-prices {
+.toolbar-actions {
   margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.toolbar-prices {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -1027,6 +1033,7 @@ table.fin tr.is-median td {
     white-space: normal;
     line-height: 1.2;
   }
+  .toolbar-actions,
   .toolbar-prices {
     flex: 1 1 100%;
     flex-wrap: wrap;
@@ -1034,6 +1041,9 @@ table.fin tr.is-median td {
     padding: 6px 0 0;
     border-left: 0;
     border-top: 1px solid rgba(245, 166, 35, 0.35);
+  }
+  .toolbar-prices + .toolbar-prices {
+    margin-top: 0;
   }
   .tabs {
     flex-wrap: nowrap;

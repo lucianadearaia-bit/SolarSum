@@ -25,10 +25,17 @@
       <button type="button" class="primary" id="btnPrint">Impressão da Proposta</button>
       <button type="button" id="btnReset">Limpar Dados</button>
     </nav>
-    <div class="toolbar-prices">
-      <span class="toolbar-prices-label">Tabela de Preços</span>
-      <a class="btn" href="assets/Tabela_Precos_4Bi.xlsx" download>Baixar</a>
-      <label class="btn">Importar<input type="file" id="file4bi" accept=".xlsx,.xls,.csv" hidden /></label>
+    <div class="toolbar-actions">
+      <div class="toolbar-prices">
+        <span class="toolbar-prices-label">Arquivo da proposta</span>
+        <button type="button" id="btnSaveProposta">Salvar</button>
+        <label class="btn">Abrir<input type="file" id="fileProposta" accept=".json,application/json" hidden /></label>
+      </div>
+      <div class="toolbar-prices">
+        <span class="toolbar-prices-label">Tabela de Preços</span>
+        <a class="btn" href="assets/Tabela_Precos_4Bi.xlsx" download>Baixar</a>
+        <label class="btn">Importar<input type="file" id="file4bi" accept=".xlsx,.xls,.csv" hidden /></label>
+      </div>
     </div>
   </header>
 
@@ -181,7 +188,7 @@
 
       <section class="panel" id="tab-tabela4bi">
         <h2>Tabela de preços 4Bi</h2>
-        <p class="note">A tabela começa vazia. Baixe o modelo Excel, preencha e importe. Clique em um kit para copiar potência, painéis e inversor para a proposta.</p>
+        <p class="note">A tabela padrão é a Tabela_Precos_4Bi. Use Importar para substituir os kits. Clique em um kit para copiar potência, painéis e inversor para a proposta.</p>
         <p class="note" id="status4bi" hidden></p>
         <div id="tabela4biWrap" class="empty-4bi">Nenhum kit importado.</div>
       </section>

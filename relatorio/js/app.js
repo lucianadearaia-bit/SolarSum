@@ -104,7 +104,8 @@
         taxaReajustePct: "12,68%",
         taxaReajuste: 0.1268
       },
-      tabela4bi: []
+      tabela4bi: [],
+      tabela4biImported: false
     };
   }
 
@@ -154,59 +155,145 @@
   }
 
   function persist() {
-    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) { /* quota */ }
+    try {
+      const payload = Object.assign({}, state);
+      if (!payload.tabela4biImported) payload.tabela4bi = [];
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+    } catch (e) { /* quota */ }
+  }
+
+  function applySaved(saved, opts) {
+    const keepTabela = opts && opts.keepTabela;
+    const prevTabela = state.tabela4bi;
+    const prevImported = state.tabela4biImported;
+    state = Object.assign(defaultState(), saved);
+    state.empresa = Object.assign(defaultState().empresa, saved.empresa || {});
+    state.checklist = Object.assign(defaultState().checklist, saved.checklist || {});
+    const empresaFixa = defaultState().empresa;
+    state.empresa.cnpj = empresaFixa.cnpj;
+    state.empresa.telefone = empresaFixa.telefone;
+    state.empresa.endereco = empresaFixa.endereco;
+    state.checklist.itens = Object.assign(defaultState().checklist.itens, (saved.checklist || {}).itens || {});
+    state.proposta = Object.assign(defaultState().proposta, saved.proposta || {});
+    if (!state.checklist.cpfCnpj && state.proposta.cpfCnpj) {
+      state.checklist.cpfCnpj = state.proposta.cpfCnpj;
+    }
+    if (!state.checklist.cliente && state.proposta.cliente) {
+      state.checklist.cliente = state.proposta.cliente;
+    }
+    if (!state.proposta.data) state.proposta.data = C.todayISO();
+    if (!state.proposta.tipoDesconto) state.proposta.tipoDesconto = "percentual";
+    if ((state.proposta.descontoValor === undefined || state.proposta.descontoValor === "") && state.proposta.descontoPct) {
+      state.proposta.descontoValor = state.proposta.descontoPct;
+    }
+    if (!state.checklist.dataConferencia) {
+      state.checklist.dataConferencia = defaultConferencia();
+    }
+    state.consumo = Object.assign(defaultState().consumo, saved.consumo || {});
+    const savedHsp = (saved.consumo || {}).hsp;
+    const isPadraoHsp = Array.isArray(savedHsp)
+      && savedHsp.length === 12
+      && savedHsp.every((v, i) => C.num(v, 0) === C.HSP_PADRAO[i]);
+    if (!savedHsp || savedHsp.length !== 12 || isPadraoHsp) {
+      state.consumo.hsp = Array(12).fill("");
+    }
+    state.tarifas = Object.assign(defaultState().tarifas, saved.tarifas || {});
+    ["tusd", "te", "fioB", "subsidio"].forEach((k) => {
+      const n = Number(state.tarifas[k]);
+      if (Number.isFinite(n)) state.tarifas[k] = Math.round(n * 1e4) / 1e4;
+    });
+    ["pis", "cofins", "icms"].forEach((k) => {
+      const pctKey = k + "Pct";
+      const savedT = saved.tarifas || {};
+      if (savedT[pctKey] != null && savedT[pctKey] !== "") return;
+      const n = Number(savedT[k]);
+      if (Number.isFinite(n)) state.tarifas[pctKey] = pctFromStored(n * 100, 2);
+    });
+    if (keepTabela) {
+      state.tabela4bi = prevTabela;
+      state.tabela4biImported = prevImported;
+    } else {
+      state.tabela4biImported = Boolean(saved.tabela4biImported && Array.isArray(saved.tabela4bi) && saved.tabela4bi.length);
+      state.tabela4bi = state.tabela4biImported ? saved.tabela4bi : [];
+    }
   }
 
   function restore() {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
       if (!raw) return;
-      const saved = JSON.parse(raw);
-      state = Object.assign(defaultState(), saved);
-      state.empresa = Object.assign(defaultState().empresa, saved.empresa || {});
-      state.checklist = Object.assign(defaultState().checklist, saved.checklist || {});
-      const empresaFixa = defaultState().empresa;
-      state.empresa.cnpj = empresaFixa.cnpj;
-      state.empresa.telefone = empresaFixa.telefone;
-      state.empresa.endereco = empresaFixa.endereco;
-      state.checklist.itens = Object.assign(defaultState().checklist.itens, (saved.checklist || {}).itens || {});
-      state.proposta = Object.assign(defaultState().proposta, saved.proposta || {});
-      if (!state.checklist.cpfCnpj && state.proposta.cpfCnpj) {
-        state.checklist.cpfCnpj = state.proposta.cpfCnpj;
-      }
-      if (!state.checklist.cliente && state.proposta.cliente) {
-        state.checklist.cliente = state.proposta.cliente;
-      }
-      if (!state.proposta.data) state.proposta.data = C.todayISO();
-      if (!state.proposta.tipoDesconto) state.proposta.tipoDesconto = "percentual";
-      if ((state.proposta.descontoValor === undefined || state.proposta.descontoValor === "") && state.proposta.descontoPct) {
-        state.proposta.descontoValor = state.proposta.descontoPct;
-      }
-      if (!state.checklist.dataConferencia) {
-        state.checklist.dataConferencia = defaultConferencia();
-      }
-      state.consumo = Object.assign(defaultState().consumo, saved.consumo || {});
-      const savedHsp = (saved.consumo || {}).hsp;
-      const isPadraoHsp = Array.isArray(savedHsp)
-        && savedHsp.length === 12
-        && savedHsp.every((v, i) => C.num(v, 0) === C.HSP_PADRAO[i]);
-      if (!savedHsp || savedHsp.length !== 12 || isPadraoHsp) {
-        state.consumo.hsp = Array(12).fill("");
-      }
-      state.tarifas = Object.assign(defaultState().tarifas, saved.tarifas || {});
-      ["tusd", "te", "fioB", "subsidio"].forEach((k) => {
-        const n = Number(state.tarifas[k]);
-        if (Number.isFinite(n)) state.tarifas[k] = Math.round(n * 1e4) / 1e4;
-      });
-      ["pis", "cofins", "icms"].forEach((k) => {
-        const pctKey = k + "Pct";
-        const savedT = saved.tarifas || {};
-        if (savedT[pctKey] != null && savedT[pctKey] !== "") return;
-        const n = Number(savedT[k]);
-        if (Number.isFinite(n)) state.tarifas[pctKey] = pctFromStored(n * 100, 2);
-      });
-      state.tabela4bi = saved.tabela4bi || [];
+      applySaved(JSON.parse(raw));
     } catch (e) { /* ignore */ }
+  }
+
+  function propostaExportPayload() {
+    return {
+      kind: "solarsun-proposta",
+      version: 1,
+      savedAt: new Date().toISOString(),
+      empresa: state.empresa,
+      checklist: state.checklist,
+      proposta: state.proposta,
+      consumo: state.consumo,
+      tarifas: state.tarifas
+    };
+  }
+
+  function propostaFileName() {
+    const raw = String(state.proposta.numero || "").trim();
+    const safe = raw.replace(/[<>:"/\\|?*\u0000-\u001f]/g, "-").replace(/\s+/g, " ").trim();
+    return (safe || "proposta") + ".json";
+  }
+
+  function downloadJson(filename, data) {
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 400);
+  }
+
+  function importPropostaFile(file) {
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const saved = JSON.parse(reader.result);
+        if (!saved || (saved.kind && saved.kind !== "solarsun-proposta")) {
+          throw new Error("kind");
+        }
+        if (!saved.proposta && !saved.checklist) throw new Error("empty");
+        applySaved(saved, { keepTabela: true });
+        fillForm();
+        render();
+        setTab("proposta");
+      } catch (err) {
+        alert("Não foi possível abrir o arquivo. Use um JSON salvo por este sistema.");
+      }
+    };
+    reader.readAsText(file);
+  }
+
+  function loadDefaultTabela4bi() {
+    return fetch("assets/Tabela_Precos_4Bi.xlsx")
+      .then((res) => {
+        if (!res.ok) throw new Error("fetch");
+        return res.arrayBuffer();
+      })
+      .then((buf) => {
+        const wb = XLSX.read(new Uint8Array(buf), { type: "array" });
+        state.tabela4bi = parse4biWorkbook(wb);
+        state.tabela4biImported = false;
+        renderTabela4bi();
+        persist();
+        setStatus4bi(state.tabela4bi.length + " kit(s) da tabela padrão. Clique em um kit para aplicar.");
+      })
+      .catch(() => {
+        setStatus4bi("Não foi possível carregar a tabela padrão. Use Baixar e Importar.");
+      });
   }
 
   const PHONE_PATHS = new Set([
@@ -486,7 +573,7 @@
     const rows = state.tabela4bi || [];
     if (!rows.length) {
       wrap.className = "empty-4bi";
-      wrap.textContent = "Nenhum kit importado. Baixe o modelo Excel, preencha as colunas amarelas e importe.";
+      wrap.textContent = "Carregando tabela padrão…";
       return;
     }
     wrap.className = "table-wrap";
@@ -871,6 +958,24 @@
       localStorage.removeItem(STORAGE_KEY);
       fillForm();
       render();
+      loadDefaultTabela4bi();
+    });
+    document.getElementById("btnSaveProposta").addEventListener("click", () => {
+      const numero = String(state.proposta.numero || "").trim();
+      if (!numero) {
+        alert("Informe o número da proposta para nomear o arquivo.");
+        setTab("proposta");
+        const el = document.querySelector('[data-path="proposta.numero"]');
+        if (el) el.focus();
+        return;
+      }
+      downloadJson(propostaFileName(), propostaExportPayload());
+    });
+    document.getElementById("fileProposta").addEventListener("change", (ev) => {
+      const file = ev.target.files[0];
+      if (!file) return;
+      importPropostaFile(file);
+      ev.target.value = "";
     });
     document.getElementById("file4bi").addEventListener("change", (ev) => {
       const file = ev.target.files[0];
@@ -880,10 +985,11 @@
         try {
           const wb = XLSX.read(new Uint8Array(e.target.result), { type: "array" });
           state.tabela4bi = parse4biWorkbook(wb);
+          state.tabela4biImported = true;
           renderTabela4bi();
           persist();
           setTab("tabela4bi");
-          setStatus4bi(state.tabela4bi.length + " kit(s) importado(s). Clique em um kit para aplicar.");
+          setStatus4bi(state.tabela4bi.length + " kit(s) importado(s). Os dados anteriores foram substituídos. Clique em um kit para aplicar.");
         } catch (err) {
           alert("Não foi possível ler o arquivo. Use o modelo Excel 4Bi.");
         }
@@ -915,4 +1021,7 @@
   initTabs();
   initToolbar();
   render();
+  if (!state.tabela4biImported || !state.tabela4bi.length) {
+    loadDefaultTabela4bi();
+  }
 })();
