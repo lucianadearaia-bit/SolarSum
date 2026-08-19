@@ -192,7 +192,6 @@
       <!-- CAPA -->
       <section class="page cover">
         <img class="cover-photo" src="assets/hero.jpg" alt="" />
-        <img class="cover-wave" src="assets/cover-wave.png" alt="" />
         <div class="cover-inner">
           <div class="cover-top">
             <img class="cover-logo" src="assets/logo.png" alt="Logo SolarSun" />
@@ -630,71 +629,96 @@
           <div id="checkResumo" class="two"></div>
           <h2 class="sec" style="margin-top:12px">Anotações e observações</h2>
           <div class="obs-box" id="obsBox">—</div>
-          <div class="accept-row">
-            <div class="accept accept-sheet">
-              <h3>ACEITE DO CLIENTE</h3>
-              <div class="accept-grid">
-                <div>
-                  <div>Nome / Razão social</div>
-                  <div class="sign-line" id="aNome"></div>
-                </div>
-                <div>
-                  <div>CPF / CNPJ</div>
-                  <div class="sign-line" id="aDoc"></div>
-                </div>
-                <div>
-                  <div>Telefone</div>
-                  <div class="sign-line" id="aTelCli"></div>
-                </div>
-                <div>
-                  <div>E-mail</div>
-                  <div class="sign-line" id="aEmailCli"></div>
-                </div>
-                <div class="span-2">
-                  <div>Endereço</div>
-                  <div class="sign-line" id="aEndCli"></div>
-                </div>
-                <div>
-                  <div>N° UC</div>
-                  <div class="sign-line" id="aUc"></div>
-                </div>
-                <div>
-                  <div>Potência disjuntor de entrada</div>
-                  <div class="sign-line" id="aDisjuntor"></div>
-                </div>
-                <div>
-                  <div>Tipo de telhado</div>
-                  <div class="sign-line" id="aTelhado"></div>
-                </div>
-                <div>
-                  <div>Área mínima de telhado (m²)</div>
-                  <div class="sign-line" id="aArea"></div>
-                </div>
-                <div class="span-2">
-                  <div>Forma de pagamento</div>
-                  <div class="sign-line" id="aPag"></div>
-                </div>
-              </div>
-              <div class="accept-signoff">
-                <div class="accept-sign">
-                  <h3>Assinatura do cliente</h3>
-                  <div class="sign-line sign-space"></div>
-                </div>
-                <div class="accept-company">
-                  <h3 id="aEmp">SolarSun</h3>
-                  <div>CNPJ: 54.322.670/0001-53</div>
-                  <div class="accept-addr">
-                    <div>Rua Benjamin Constant, 132 | Sala 2</div>
-                    <div>Escola Agrícola • Blumenau/SC • CEP 89037-500</div>
-                  </div>
-                  <div>Responsável pela conferência</div>
-                  <div class="sign-line" id="aResp"></div>
-                  <div>Telefone de Contato: <span id="aTelContato">—</span></div>
-                  <div>Email: <span id="aEmailContato">—</span></div>
-                  <div class="accept-foot">Data: <span id="aData">—</span> · Projeto: <span id="aProj">—</span></div>
-                </div>
-              </div>
-            </div>
+          <div class="accept-duo">
+            <article class="accept-card">
+              <h3>Dados do cliente</h3>
+              <table class="accept-table">
+                <tbody>
+                  <tr>
+                    <th>Nome / Razão social</th>
+                    <td id="aNome"></td>
+                  </tr>
+                  <tr>
+                    <th>CPF / CNPJ</th>
+                    <td id="aDoc"></td>
+                  </tr>
+                  <tr>
+                    <th>Telefone</th>
+                    <td id="aTelCli"></td>
+                  </tr>
+                  <tr>
+                    <th>E-mail</th>
+                    <td id="aEmailCli"></td>
+                  </tr>
+                  <tr>
+                    <th>Endereço</th>
+                    <td id="aEndCli"></td>
+                  </tr>
+                  <tr>
+                    <th>N° UC</th>
+                    <td id="aUc"></td>
+                  </tr>
+                  <tr>
+                    <th>Potência disjuntor de entrada</th>
+                    <td id="aDisjuntor"></td>
+                  </tr>
+                  <tr>
+                    <th>Tipo de telhado</th>
+                    <td id="aTelhado"></td>
+                  </tr>
+                  <tr>
+                    <th>Área mínima de telhado (m²)</th>
+                    <td id="aArea"></td>
+                  </tr>
+                  <tr>
+                    <th>Forma de pagamento</th>
+                    <td id="aPag"></td>
+                  </tr>
+                </tbody>
+              </table>
+            </article>
+            <article class="accept-card">
+              <h3 id="aEmp">SolarSun</h3>
+              <table class="accept-table">
+                <tbody>
+                  <tr>
+                    <th>CNPJ</th>
+                    <td>54.322.670/0001-53</td>
+                  </tr>
+                  <tr>
+                    <th>Endereço</th>
+                    <td>
+                      Rua Benjamin Constant, 132 | Sala 2<br />
+                      Escola Agrícola • Blumenau/SC • CEP 89037-500
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>Responsável pela conferência</th>
+                    <td id="aResp"></td>
+                  </tr>
+                  <tr>
+                    <th>Telefone de contato</th>
+                    <td id="aTelContato">—</td>
+                  </tr>
+                  <tr>
+                    <th>E-mail</th>
+                    <td id="aEmailContato">—</td>
+                  </tr>
+                  <tr>
+                    <th>Data da conferência</th>
+                    <td id="aData">—</td>
+                  </tr>
+                  <tr>
+                    <th>Projeto</th>
+                    <td id="aProj">—</td>
+                  </tr>
+                </tbody>
+              </table>
+            </article>
+          </div>
+          <div class="accept-sign">
+            <h3>Assinatura do cliente</h3>
+            <div class="sign-line sign-space"></div>
           </div>
           <p class="fine" style="margin-top:10px">25 anos de garantia de geração de energia e vida útil de 35 anos nos módulos · 10 a 15 anos de garantia no inversor, conforme fabricante informado na proposta.</p>
         </div>

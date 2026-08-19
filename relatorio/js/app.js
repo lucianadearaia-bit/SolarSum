@@ -42,7 +42,7 @@
         areaTelhado: "",
         observacoes: "",
         responsavel: "",
-        dataConferencia: C.addDays(C.todayISO(), 15),
+        dataConferencia: C.todayISO(),
         telefoneContato: "",
         emailContato: "",
         numeroProjeto: ""
@@ -85,7 +85,7 @@
       consumo: {
         geracaoMedia: "",
         geracaoManual: false,
-        hsp: C.HSP_PADRAO.slice(),
+        hsp: Array(12).fill(""),
         ucs: [{ nome: "UC1", valores: Array(12).fill("") }]
       },
       tarifas: {
@@ -149,8 +149,8 @@
     if (state.checklist.cpfCnpj) p.cpfCnpj = state.checklist.cpfCnpj;
   }
 
-  function defaultConferencia(data) {
-    return C.addDays(data || C.todayISO(), 15);
+  function defaultConferencia() {
+    return C.todayISO();
   }
 
   function persist() {
@@ -182,12 +182,17 @@
       if ((state.proposta.descontoValor === undefined || state.proposta.descontoValor === "") && state.proposta.descontoPct) {
         state.proposta.descontoValor = state.proposta.descontoPct;
       }
-      const dataProp = state.proposta.data || C.todayISO();
-      const autoConf = defaultConferencia(dataProp);
-      if (!state.checklist.dataConferencia || state.checklist.dataConferencia === C.todayISO()) {
-        state.checklist.dataConferencia = autoConf;
+      if (!state.checklist.dataConferencia) {
+        state.checklist.dataConferencia = defaultConferencia();
       }
       state.consumo = Object.assign(defaultState().consumo, saved.consumo || {});
+      const savedHsp = (saved.consumo || {}).hsp;
+      const isPadraoHsp = Array.isArray(savedHsp)
+        && savedHsp.length === 12
+        && savedHsp.every((v, i) => C.num(v, 0) === C.HSP_PADRAO[i]);
+      if (!savedHsp || savedHsp.length !== 12 || isPadraoHsp) {
+        state.consumo.hsp = Array(12).fill("");
+      }
       state.tarifas = Object.assign(defaultState().tarifas, saved.tarifas || {});
       ["tusd", "te", "fioB", "subsidio"].forEach((k) => {
         const n = Number(state.tarifas[k]);
@@ -343,7 +348,7 @@
   function fillForm() {
     if (!state.proposta.data) state.proposta.data = C.todayISO();
     if (!state.checklist.dataConferencia) {
-      state.checklist.dataConferencia = defaultConferencia(state.proposta.data);
+      state.checklist.dataConferencia = defaultConferencia();
     }
     document.querySelectorAll("[data-path]").forEach((el) => {
       const val = getPath(state, el.dataset.path);
@@ -393,17 +398,6 @@
             }
           }
           updateDescontoUi();
-        }
-        else if (el.dataset.path === "proposta.data") {
-          const prevData = state.proposta.data;
-          const prevConf = state.checklist.dataConferencia;
-          setPath(state, el.dataset.path, el.value);
-          const stillAuto = !prevConf || prevConf === defaultConferencia(prevData) || prevConf === C.todayISO();
-          if (stillAuto) {
-            state.checklist.dataConferencia = defaultConferencia(el.value);
-            const confEl = document.querySelector("[data-path='checklist.dataConferencia']");
-            if (confEl) confEl.value = state.checklist.dataConferencia;
-          }
         }
         else setPath(state, el.dataset.path, el.value);
         render();

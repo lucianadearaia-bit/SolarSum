@@ -81,7 +81,7 @@
     const geracao4bi = potenciaKwp * 98;
     const geracaoMedia = c.geracaoManual ? num(c.geracaoMedia, geracao4bi) : geracao4bi || num(c.geracaoMedia, 0);
 
-    const hsp = (c.hsp && c.hsp.length === 12 ? c.hsp : HSP_PADRAO).map((v) => num(v, 0));
+    const hsp = (c.hsp && c.hsp.length === 12 ? c.hsp : Array(12).fill("")).map((v) => num(v, 0));
     const somaHsp = hsp.reduce((a, b) => a + b, 0);
     const mediaHsp = (hsp.length ? somaHsp / hsp.length : 0) || 1;
 
