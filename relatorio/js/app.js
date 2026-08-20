@@ -105,7 +105,8 @@
         taxaReajuste: 0.1268
       },
       tabela4bi: [],
-      tabela4biImported: false
+      tabela4biImported: false,
+      tabela4biLoading: true
     };
   }
 
@@ -215,6 +216,7 @@
     } else {
       state.tabela4biImported = Boolean(saved.tabela4biImported && Array.isArray(saved.tabela4bi) && saved.tabela4bi.length);
       state.tabela4bi = state.tabela4biImported ? saved.tabela4bi : [];
+      state.tabela4biLoading = !state.tabela4bi.length;
     }
   }
 
@@ -278,6 +280,8 @@
   }
 
   function loadDefaultTabela4bi() {
+    state.tabela4biLoading = true;
+    renderTabela4bi();
     return fetch("assets/Tabela_Precos_4Bi.xlsx")
       .then((res) => {
         if (!res.ok) throw new Error("fetch");
@@ -287,11 +291,14 @@
         const wb = XLSX.read(new Uint8Array(buf), { type: "array" });
         state.tabela4bi = parse4biWorkbook(wb);
         state.tabela4biImported = false;
+        state.tabela4biLoading = false;
         renderTabela4bi();
         persist();
         setStatus4bi(state.tabela4bi.length + " kit(s) da tabela padrão. Clique em um kit para aplicar.");
       })
       .catch(() => {
+        state.tabela4biLoading = false;
+        renderTabela4bi();
         setStatus4bi("Não foi possível carregar a tabela padrão. Use Baixar e Importar.");
       });
   }
@@ -573,7 +580,9 @@
     const rows = state.tabela4bi || [];
     if (!rows.length) {
       wrap.className = "empty-4bi";
-      wrap.textContent = "Carregando tabela padrão…";
+      wrap.textContent = state.tabela4biLoading
+        ? "Carregando tabela padrão…"
+        : "Nenhum kit encontrado. Use Importar para carregar a Tabela_Precos_4Bi.";
       return;
     }
     wrap.className = "table-wrap";
@@ -607,25 +616,32 @@
   }
 
   function parse4biWorkbook(wb) {
-    const name = wb.SheetNames.find((n) => /pre[cç]o/i.test(n) || /4bi/i.test(n)) || wb.SheetNames[0];
+    const name = wb.SheetNames.find((n) => /pre[cç]o/i.test(n) || /4bi/i.test(n))
+      || wb.SheetNames.find((n) => !/instru/i.test(n))
+      || wb.SheetNames[0];
     const sheet = wb.Sheets[name];
-    const rows = XLSX.utils.sheet_to_json(sheet, { header: 1, defval: "" });
-    let headerIdx = rows.findIndex((r) => r.some((c) => String(c).toLowerCase().includes("qtde") || String(c).toLowerCase().includes("pain")));
+    const rows = XLSX.utils.sheet_to_json(sheet, { header: 1, defval: "", raw: true });
+    const norm = (h) => String(h || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    let headerIdx = rows.findIndex((r) => r.some((c) => {
+      const h = norm(c);
+      return h.includes("qtde") || (h.includes("pain") && h.includes("w"));
+    }));
     if (headerIdx < 0) headerIdx = 3;
-    const header = rows[headerIdx].map((h) => String(h).toLowerCase());
+    const header = (rows[headerIdx] || []).map(norm);
     const idx = (pred) => header.findIndex(pred);
+    const orPos = (found, fallback) => (found >= 0 ? found : fallback);
     const col = {
-      n: idx((h) => h === "n" || h === "nº" || h === "no"),
-      kwp: idx((h) => h.includes("potência kwp") && !h.includes("2")),
-      kwh: idx((h) => h.includes("kwh") && !h.includes(".")),
-      qtde: idx((h) => h.includes("qtde")),
-      watt: idx((h) => h.includes("pain") && h.includes("w")),
-      inversor: idx((h) => h.includes("pot") && h.includes("invers")),
-      preco: idx((h) => h.includes("preço") || h.includes("preco")),
-      indice: idx((h) => h.includes("índice") || h.includes("indice")),
-      marca: idx((h) => h.includes("marca")),
-      fase: idx((h) => h.includes("fase") || h.includes("padrão") || h.includes("padrao")),
-      valor10: idx((h) => h.includes("10%"))
+      n: orPos(idx((h) => h === "n" || h === "nº" || h === "no"), 1),
+      kwp: orPos(idx((h) => h.includes("potencia kwp") && !h.includes("2")), 2),
+      kwh: orPos(idx((h) => h.includes("kwh") && !h.includes(".")), 3),
+      qtde: orPos(idx((h) => h.includes("qtde")), 4),
+      watt: orPos(idx((h) => h.includes("pain") && h.includes("w")), 5),
+      inversor: orPos(idx((h) => h.includes("pot") && h.includes("invers")), 6),
+      preco: orPos(idx((h) => h.includes("preco")), 7),
+      indice: orPos(idx((h) => h.includes("indice")), 8),
+      marca: orPos(idx((h) => h.includes("marca")), 9),
+      fase: orPos(idx((h) => h.includes("fase") || h.includes("padrao")), 10),
+      valor10: orPos(idx((h) => h.includes("10%")), 11)
     };
     const kits = [];
     for (let i = headerIdx + 1; i < rows.length; i++) {
